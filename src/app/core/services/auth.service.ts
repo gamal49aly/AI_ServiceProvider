@@ -1,10 +1,10 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { map, delay, of, tap, Observable } from 'rxjs';
+import { tap, Observable } from 'rxjs';
 
 export interface User {
-  id: number;
+  userId: number;
   email: string;
   name: string;
   token: string;
@@ -20,56 +20,46 @@ export class AuthService {
   // State Management using Signals
   currentUser = signal<User | null>(this.getUserFromStorage());
 
-  // Mock API URLs
-  private baseUrl = 'https://mock-api.com/api'; 
+  // REAL .NET API URL
+  private baseUrl = 'https://localhost:7115/api/auth';
 
   constructor() {}
 
-  // Login Function (Mocked)
-  login(credentials: any): Observable<User> {
-    // (Simulated Backend Call)
-    const mockResponse: User = {
-      id: 1,
-      email: credentials.email,
-      name: 'ITI Student',
-      token: 'fake-jwt-token-123456'
-    };
+  // LOGIN --------------
+  login(credentials: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/login`, credentials).pipe(
+      tap(response => {
+        const user: User = {
+          userId: response.user.userId,
+          name: response.user.name,
+          email: response.user.email,
+          token: response.token
+        };
 
-    return of(mockResponse).pipe(
-      delay(1000),
-      tap(user => {
         this.saveUserToStorage(user);
         this.currentUser.set(user);
       })
     );
   }
 
-  // Register Function (Mocked)
-  register(data: any): Observable<User> {
-    const mockResponse: User = {
-      id: 2,
-      email: data.email,
-      name: data.name,
-      token: 'fake-jwt-token-register'
-    };
-
-    return of(mockResponse).pipe(
-      delay(1000),
-      tap(user => {
-        this.saveUserToStorage(user);
-        this.currentUser.set(user);
+  // REGISTER ----------
+  register(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/register`, data).pipe(
+      tap(() => {
+        // You can choose what to do after register.
+        // If backend returns the user + token, you can store it here.
       })
     );
   }
 
-  // Logout
+  // LOGOUT ------------
   logout() {
     localStorage.removeItem('user_session');
     this.currentUser.set(null);
     this.router.navigate(['/pages/login']);
   }
 
-  // Helper Methods
+  // STORAGE HELPERS ---
   private saveUserToStorage(user: User) {
     localStorage.setItem('user_session', JSON.stringify(user));
   }
