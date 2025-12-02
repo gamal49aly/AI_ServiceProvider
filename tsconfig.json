@@ -20,6 +20,7 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "typeCheckHostBindings": true,
+    "disableTypeScriptVersionCheck": true,
     "strictTemplates": true
   },
   "files": [],

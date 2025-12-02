@@ -23,19 +23,19 @@ export class AuthService {
   // REAL .NET API URL
   private baseUrl = 'https://localhost:7115/api/auth';
 
-  constructor() {}
+  constructor() { }
 
   // LOGIN --------------
   login(credentials: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/login`, credentials).pipe(
       tap(response => {
+        console.log('Backend Response:', response);
         const user: User = {
-          userId: response.user.userId,
-          name: response.user.name,
-          email: response.user.email,
-          token: response.token
+          userId: response.user?.userId || 0,
+          name: response.user?.name || 'User',
+          email: credentials.email,
+          token: response.token || response
         };
-
         this.saveUserToStorage(user);
         this.currentUser.set(user);
       })

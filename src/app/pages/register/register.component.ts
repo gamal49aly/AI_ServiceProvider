@@ -4,76 +4,121 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
-// PrimeNG
-import { CardModule } from 'primeng/card';
+// PrimeNG Imports
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
+import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
-    RouterLink,
-    CardModule, 
-    InputTextModule, 
-    ButtonModule, 
-    PasswordModule
+    CommonModule, ReactiveFormsModule, RouterLink,
+    InputTextModule, ButtonModule, PasswordModule, ToastModule
   ],
   providers: [MessageService],
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
-      <div class="w-full max-w-md">
-        <p-card header="Create Account" styleClass="shadow-lg">
-          <p class="text-gray-500 mb-5">Join AI Solutions today</p>
+    <p-toast></p-toast>
+    <div class="min-h-screen flex w-full bg-white dark:bg-slate-900 overflow-hidden">
+      
+      <div class="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 relative z-10">
+        <div class="w-full max-w-md space-y-8 animate-fade-in-up">
           
-          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+          <div class="text-center lg:text-left">
+            <div class="inline-block p-3 rounded-2xl bg-indigo-50 text-indigo-600 mb-6">
+               <i class="pi pi-user-plus text-2xl"></i>
+            </div>
+            <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Create Account</h2>
+            <p class="text-slate-500 text-lg">Join us today and start your journey.</p>
+          </div>
+
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
             
-            <div class="flex flex-col gap-2">
-              <label class="font-medium text-gray-700">Full Name</label>
-              <input pInputText formControlName="name" class="w-full" />
+            <div class="space-y-4">
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">Full Name</label>
+                <span class="p-input-icon-left w-full">
+                    <i class="pi pi-user text-slate-400 z-10"></i>
+                    <input pInputText formControlName="name" placeholder="John Doe" class="w-full p-inputtext-lg pl-10" />
+                </span>
+                <small class="text-red-500" *ngIf="registerForm.get('name')?.touched && registerForm.get('name')?.hasError('required')">Name is required</small>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">Email Address</label>
+                <span class="p-input-icon-left w-full">
+                    <i class="pi pi-envelope text-slate-400 z-10"></i>
+                    <input pInputText formControlName="email" placeholder="name@company.com" class="w-full p-inputtext-lg pl-10" />
+                </span>
+                <small class="text-red-500" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('email')">Invalid email address</small>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-slate-700">Password</label>
+                <p-password formControlName="password" [toggleMask]="true" 
+                            styleClass="w-full" inputStyleClass="w-full p-inputtext-lg" placeholder="••••••••"
+                            [strongLabel]="'Strong'" [weakLabel]="'Weak'" [mediumLabel]="'Medium'">
+                </p-password>
+                <small class="text-slate-400 text-xs">Must contain uppercase, symbol, and number.</small>
+              </div>
             </div>
 
-            <div class="flex flex-col gap-2">
-              <label class="font-medium text-gray-700">Email</label>
-              <input pInputText formControlName="email" class="w-full" />
-            </div>
+            <button pButton label="Create Account" class="w-full p-button-lg bg-indigo-600 border-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200" 
+                    [loading]="loading" type="submit" [disabled]="registerForm.invalid"></button>
 
-            <div class="flex flex-col gap-2">
-              <label class="font-medium text-gray-700">Password</label>
-              <p-password 
-                formControlName="password" 
-                [toggleMask]="true" 
-                styleClass="w-full" 
-                inputStyleClass="w-full">
-              </p-password>
-            </div>
-
-            <button 
-              pButton 
-              label="Sign Up" 
-              type="submit" 
-              class="w-full p-button-success mt-4" 
-              [loading]="loading"
-              [disabled]="registerForm.invalid">
-            </button>
-
-            <div class="text-center mt-4">
-               <a routerLink="/pages/login" class="text-primary-600 font-bold hover:underline">Already have an account? Login</a>
+            <div class="text-center mt-6">
+               <p class="text-slate-600">
+                 Already have an account? 
+                 <a routerLink="/pages/login" class="font-bold text-indigo-600 hover:text-indigo-500 transition-colors cursor-pointer">Sign in</a>
+               </p>
             </div>
           </form>
-        </p-card>
+        </div>
+      </div>
+
+      <div class="hidden lg:flex lg:w-1/2 bg-slate-900 relative items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-bl from-indigo-900 via-slate-900 to-black"></div>
+        <div class="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-blue-500 rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500 rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+
+        <div class="relative z-10 bg-white/10 backdrop-blur-md border border-white/20 p-12 rounded-3xl max-w-lg text-center shadow-2xl">
+            <h3 class="text-3xl font-bold text-white mb-4">Join the Future</h3>
+            <p class="text-indigo-100 text-lg leading-relaxed">
+                Unlock the full potential of AI-driven media processing. Sign up now to access all premium features.
+            </p>
+        </div>
       </div>
     </div>
-  `
+  `,
+  styles: [`
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+      animation: fadeUp 0.6s ease-out forwards;
+    }
+    @keyframes blob {
+      0% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(30px, -50px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+    .animate-blob {
+      animation: blob 10s infinite;
+    }
+    .animation-delay-2000 {
+      animation-delay: 2s;
+    }
+  `]
 })
 export class RegisterComponent {
   fb = inject(FormBuilder);
   authService = inject(AuthService);
   router = inject(Router);
+  messageService = inject(MessageService);
 
   loading = false;
 
@@ -88,9 +133,29 @@ export class RegisterComponent {
       this.loading = true;
       this.authService.register(this.registerForm.value).subscribe({
         next: () => {
-          this.router.navigate(['/']); // Redirect home after register
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Account created successfully' });
+          // Redirect to Login so user can log in
+          setTimeout(() => this.router.navigate(['/pages/login']), 1000);
         },
-        error: () => this.loading = false
+        error: (err) => {
+          this.loading = false;
+          console.log(err);
+
+          // Handle different error formats coming from .NET Identity
+          let errorMessage = 'Registration failed';
+          if (err.error) {
+            if (typeof err.error === 'string') errorMessage = err.error;
+            else if (err.error.errors) errorMessage = JSON.stringify(err.error.errors);
+            else if (err.error[0]?.description) errorMessage = err.error[0].description;
+          }
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: errorMessage,
+            life: 5000
+          });
+        }
       });
     }
   }
