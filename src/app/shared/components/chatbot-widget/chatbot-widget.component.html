@@ -1,0 +1,181 @@
+<div class="chatbot-widget fixed right-6 bottom-6 z-50">
+  @if (isOpen()) {
+    <div
+      class="chat-window d-bg-base-100 mb-4 rounded-2xl shadow-2xl max-sm:w-[calc(100vw-2rem)]"
+    >
+      <!-- header -->
+      <div
+        class="chat-header bg-primary text-primary-content flex items-center justify-between rounded-t-2xl p-4"
+      >
+        <div class="item-center flex gap-3">
+          <div class="d-avatar d-avatar-online">
+            <div class="bg-primary-content w-10 rounded-full">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-primary h-10 w-10 p-1"
+              >
+                <path d="M12 8V4H8" />
+                <rect width="16" height="12" x="4" y="8" rx="2" />
+                <path d="M2 14h2" />
+                <path d="M20 14h2" />
+                <path d="M15 13v2" />
+                <path d="M9 13v2" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold">AI Assistant</h3>
+            <p class="text-xs opacity-90">Online</p>
+          </div>
+        </div>
+        <button
+          (click)="toggleChat()"
+          class="d-btn d-btn-circle d-btn-ghost d-btn-sm text-primary-content"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            class="h-5 w-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+            />
+          </svg>
+        </button>
+      </div>
+      <!-- messages -->
+      <div class="chat-messages bg-base-200 h-96 overflow-y-auto p-4">
+        <!--message buuble-->
+        @for (message of messages(); track message.id) {
+          <app-chat-message [message]="message"></app-chat-message>
+        }
+
+        <!-- Typing Indicator -->
+        @if (isTyping()) {
+          <div class="d-chat d-chat-start">
+            <div class="d-chat-image d-avatar">
+              <div class="w-10 rounded-full">
+                <div
+                  class="bg-primary flex h-10 w-10 items-center justify-center rounded-full"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-6 w-6 text-primary-content"
+                  >
+                    <path d="M12 6V2H8" />
+                    <path d="M15 11v2" />
+                    <path d="M2 12h2" />
+                    <path d="M20 12h2" />
+                    <path
+                      d="M20 16a2 2 0 0 1-2 2H8.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 4 20.286V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"
+                    />
+                    <path d="M9 11v2" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="d-chat-bubble d-chat-bubble-primary">
+              <span class="d-loading d-loading-dots d-loading-sm"></span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- input -->
+      <div class="d-chat-input border-base-300 bg-base-100 border-t p-4">
+        <div class="flex gap-2">
+          <input
+            type="text"
+            [value]="currentMessage()"
+            (input)="currentMessage.set($any($event.target).value)"
+            (keydown.enter)="handleEnter($event)"
+            placeholder="Type your message..."
+            autocomplete="off"
+            maxlength="200"
+            class="d-input d-input-bordered focus:d-input-primary flex-1"
+            [disabled]="isTyping()"
+          />
+          <button
+            (click)="sendMessage()"
+            [disabled]="!currentMessage().trim() || isTyping()"
+            class="d-btn d-btn-primary"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="h-5 w-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+  <!--toggle button-->
+  <button
+    (click)="toggleChat()"
+    class="chat-toggle-btn d-btn d-btn-circle d-btn-primary d-btn-lg shadow-2xl transition-transform hover:scale-110"
+  >
+    @if (isOpen()) {
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        class="h-7 w-7"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 18 18 6M6 6l12 12"
+        />
+      </svg>
+    } @else {
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        class="h-7 w-7"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"
+        />
+      </svg>
+      @if (unreadCount() > 0 && !isOpen()) {
+        <span class="d-badge d-badge-error d-badge-sm absolute -top-1 -right-1">
+          {{ unreadCount() }}</span
+        >
+      }
+    }
+  </button>
+</div>

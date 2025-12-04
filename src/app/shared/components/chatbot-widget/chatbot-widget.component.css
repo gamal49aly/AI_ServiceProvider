@@ -1,0 +1,78 @@
+/* Chatbot Widget Styles */
+.chatbot-widget {
+  font-family: inherit;
+}
+
+/* Smooth animations for chat window */
+.chat-window {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom scrollbar for messages */
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: hsl(var(--bc) / 0.2);
+  border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--bc) / 0.3);
+}
+
+/* Message animations */
+.chat {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulse animation for toggle button */
+.btn-circle.btn-primary {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--p) / 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px hsl(var(--p) / 0);
+  }
+}
+
+/* Hover effects */
+.chat-bubble {
+  transition: transform 0.2s ease;
+}
+
+.chat-bubble:hover {
+  transform: scale(1.02);
+}

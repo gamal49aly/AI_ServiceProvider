@@ -1,5 +1,8 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  prefix: "d-";
+  logs: true;
+}
 
 @import "primeicons/primeicons.css";
 
