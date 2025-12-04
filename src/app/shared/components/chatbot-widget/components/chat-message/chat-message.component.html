@@ -1,0 +1,45 @@
+<div class="d-chat" [class]="
+              isUserMessage() ? 'd-chat-end' : 'd-chat-start'
+            ">
+    <div class="d-chat-image d-avatar">
+        <div class="w-10 rounded-full">
+            @if (isUserMessage()) {
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-accent">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="h-6 w-6 text-accent-content">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+            </div>
+
+            } @else {
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
+                 <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="h-6 w-6 text-primary-content">
+                                <path d="M12 6V2H8" />
+                                <path d="M15 11v2" />
+                                <path d="M2 12h2" />
+                                <path d="M20 12h2" />
+                                <path
+                                    d="M20 16a2 2 0 0 1-2 2H8.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 4 20.286V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z" />
+                                <path d="M9 11v2" />
+                            </svg>
+            </div>
+            }
+        </div>
+    </div>
+    <div [class]="
+                isUserMessage()
+                  ? 'd-chat-bubble d-chat-bubble-accent'
+                  : 'd-chat-bubble d-chat-bubble-primary'
+              ">
+        {{ message().text }}
+    </div>
+    <div class="d-chat-footer opacity-50">
+        <time class="text-xs">{{
+            message().timestamp | date: "shortTime"
+            }}</time>
+    </div>
+</div>
