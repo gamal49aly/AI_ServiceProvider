@@ -155,21 +155,45 @@ export class LoginComponent {
    * Handles form submission.
    * Calls AuthService to authenticate user and redirects to Home on success.
    */
-  onSubmit() {
-    if (this.loginForm.valid) {
-      this.loading = true;
-      this.authService.login(this.loginForm.value).subscribe({
-        next: (user) => {
-          this.messageService.add({ severity: 'success', summary: 'Welcome', detail: 'Login successful' });
-          // Delay navigation slightly to show success message
-          setTimeout(() => this.router.navigate(['/']), 800);
-        },
-        error: (err) => {
-          console.error('Login Error:', err);
-          this.loading = false;
-          this.messageService.add({ severity: 'error', summary: 'Login Failed', detail: 'Invalid email or password' });
-        }
-      });
-    }
+
+onSubmit() {
+  if (this.loginForm.valid) {
+    this.loading = true;
+    
+    const credentials = {
+      email: this.loginForm.value.email!,
+      password: this.loginForm.value.password!
+    };
+    
+    this.authService.login(credentials).subscribe({
+      next: (response) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Welcome Back',
+          detail: `Hello, ${response.user.displayName}!`
+        });
+        
+        setTimeout(() => this.router.navigate(['/']), 800);
+      },
+      error: (err) => {
+        console.error('Login Error:', err);
+        this.loading = false;
+        
+        const errorMessage = err.error?.message || err.error || 'Invalid email or password';
+        
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Login Failed',
+          detail: errorMessage
+        });
+      }
+    });
   }
+}
+
+
+  
+
+
+
 }

@@ -40,10 +40,18 @@ import { MessageService } from 'primeng/api';
               <div class="flex flex-col gap-2">
                 <label class="font-semibold text-slate-700">Full Name</label>
                 <span class="p-input-icon-left w-full">
-                    <i class="pi pi-user text-slate-400 z-10"></i>
-                    <input pInputText formControlName="name" placeholder="John Doe" class="w-full p-inputtext-lg pl-10" />
+                  <i class="pi pi-user text-slate-400 z-10"></i>
+                  <input 
+                    pInputText 
+                    formControlName="displayName" 
+                    placeholder="John Doe" 
+                    class="w-full p-inputtext-lg pl-10" 
+                  />
                 </span>
-                <small class="text-red-500" *ngIf="registerForm.get('name')?.touched && registerForm.get('name')?.hasError('required')">Name is required</small>
+                <small class="text-red-500" 
+                  *ngIf="registerForm.get('displayName')?.touched && registerForm.get('displayName')?.hasError('required')">
+                  Name is required
+                </small>
               </div>
 
               <div class="flex flex-col gap-2">
@@ -123,35 +131,49 @@ export class RegisterComponent {
   loading = false;
 
   registerForm = this.fb.group({
-    name: ['', Validators.required],
+    displayName: ['', Validators.required],  // Changed from 'name' to 'displayName'
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
+
   onSubmit() {
     if (this.registerForm.valid) {
       this.loading = true;
-      this.authService.register(this.registerForm.value).subscribe({
-        next: () => {
-          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Account created successfully' });
-          // Redirect to Login so user can log in
-          setTimeout(() => this.router.navigate(['/pages/login']), 1000);
+
+      const registerData = {
+        email: this.registerForm.value.email!,
+        password: this.registerForm.value.password!,
+        displayName: this.registerForm.value.displayName!
+      };
+
+      this.authService.register(registerData).subscribe({
+        next: (response) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: response.message || 'Account created successfully! Please login.'
+          });
+
+          setTimeout(() => this.router.navigate(['/pages/login']), 1500);
         },
         error: (err) => {
           this.loading = false;
-          console.log(err);
+          console.error('Registration Error:', err);
 
-          // Handle different error formats coming from .NET Identity
           let errorMessage = 'Registration failed';
+
           if (err.error) {
-            if (typeof err.error === 'string') errorMessage = err.error;
-            else if (err.error.errors) errorMessage = JSON.stringify(err.error.errors);
-            else if (err.error[0]?.description) errorMessage = err.error[0].description;
+            if (typeof err.error === 'string') {
+              errorMessage = err.error;
+            } else if (err.error.message) {
+              errorMessage = err.error.message;
+            }
           }
 
           this.messageService.add({
             severity: 'error',
-            summary: 'Error',
+            summary: 'Registration Error',
             detail: errorMessage,
             life: 5000
           });
@@ -159,4 +181,5 @@ export class RegisterComponent {
       });
     }
   }
+
 }
