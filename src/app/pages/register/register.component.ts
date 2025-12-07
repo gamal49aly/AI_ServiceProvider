@@ -40,10 +40,18 @@ import { MessageService } from 'primeng/api';
               <div class="flex flex-col gap-2">
                 <label class="font-semibold text-slate-700">Full Name</label>
                 <span class="p-input-icon-left w-full">
-                    <i class="pi pi-user text-slate-400 z-10"></i>
-                    <input pInputText formControlName="name" placeholder="John Doe" class="w-full p-inputtext-lg pl-10" />
+                  <i class="pi pi-user text-slate-400 z-10"></i>
+                  <input 
+                    pInputText 
+                    formControlName="displayName" 
+                    placeholder="John Doe" 
+                    class="w-full p-inputtext-lg pl-10" 
+                  />
                 </span>
-                <small class="text-red-500" *ngIf="registerForm.get('name')?.touched && registerForm.get('name')?.hasError('required')">Name is required</small>
+                <small class="text-red-500" 
+                  *ngIf="registerForm.get('displayName')?.touched && registerForm.get('displayName')?.hasError('required')">
+                  Name is required
+                </small>
               </div>
 
               <div class="flex flex-col gap-2">
@@ -123,40 +131,71 @@ export class RegisterComponent {
   loading = false;
 
   registerForm = this.fb.group({
-    name: ['', Validators.required],
+    displayName: ['', Validators.required],  // Changed from 'name' to 'displayName'
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
+
   onSubmit() {
     if (this.registerForm.valid) {
       this.loading = true;
-      this.authService.register(this.registerForm.value).subscribe({
-        next: () => {
-          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Account created successfully' });
-          // Redirect to Login so user can log in
-          setTimeout(() => this.router.navigate(['/pages/login']), 1000);
+
+      // Ensure this object matches EXACTLY what your Swagger/Backend expects
+      const registerData = {
+        email: this.registerForm.value.email!,
+        password: this.registerForm.value.password!,
+        
+        // التعديل هنا: غيرنا displayName لـ name
+        name: this.registerForm.value.displayName! 
+      };
+
+      this.authService.register(registerData).subscribe({
+        next: (response) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Account created successfully! Please login.'
+          });
+
+          // Navigate to login after delay
+          setTimeout(() => this.router.navigate(['/pages/login']), 1500);
         },
         error: (err) => {
           this.loading = false;
-          console.log(err);
+          console.error('Registration Error Details:', err);
 
-          // Handle different error formats coming from .NET Identity
-          let errorMessage = 'Registration failed';
+          let errorMessage = 'Registration failed. Please check your data.';
+
+          // Logic to parse .NET Core Validation Errors
           if (err.error) {
-            if (typeof err.error === 'string') errorMessage = err.error;
-            else if (err.error.errors) errorMessage = JSON.stringify(err.error.errors);
-            else if (err.error[0]?.description) errorMessage = err.error[0].description;
+            // 1. Handle "One or more validation errors occurred"
+            if (err.error.errors) {
+                // Get the first error message from the validation object
+                const firstKey = Object.keys(err.error.errors)[0];
+                if (firstKey && err.error.errors[firstKey].length > 0) {
+                    errorMessage = err.error.errors[firstKey][0];
+                }
+            } 
+            // 2. Handle Identity Framework array errors
+            else if (Array.isArray(err.error)) {
+                errorMessage = err.error[0].description || err.error[0].code;
+            }
+            // 3. Handle simple string messages
+            else if (typeof err.error === 'string') {
+                errorMessage = err.error;
+            }
           }
 
           this.messageService.add({
             severity: 'error',
-            summary: 'Error',
-            detail: errorMessage,
+            summary: 'Validation Error',
+            detail: errorMessage, // This will now show the EXACT reason from Backend
             life: 5000
           });
         }
       });
     }
   }
+
 }
