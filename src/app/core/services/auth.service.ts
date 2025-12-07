@@ -21,7 +21,7 @@ export class AuthService {
   currentUser = signal<User | null>(this.getUserFromStorage());
 
   // REAL .NET API URL
-  private baseUrl = 'https://localhost:7115/api/Auth';
+  private baseUrl = 'https://localhost:7049/api/Auth';
 
   constructor() { }
 
