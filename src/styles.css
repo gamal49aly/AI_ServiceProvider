@@ -1,9 +1,105 @@
 @import "tailwindcss";
+
 @plugin "daisyui" {
-  prefix: "d-";
-  logs: true;
+    prefix: "d-";
+    logs: true;
 }
 
 @import "primeicons/primeicons.css";
 
+/* Tailwind v4 Dark Mode Variant Override */
+@variant dark (&:where(.dark, .dark *));
+
 @layer tailwind, primeng;
+
+/* Global Defaults (Light Mode) */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* Default Light Colors */
+    background-color: #f8fafc;
+    /* slate-50 */
+    color: #0f172a;
+    /* slate-900 */
+
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Global Dark Mode Overrides */
+:root.dark body,
+:root.my-app-dark body {
+    background-color: #020617 !important;
+    /* slate-950 */
+    color: #f8fafc !important;
+    /* slate-50 */
+}
+
+/* PrimeNG Component Fixes */
+
+/* Cards */
+.my-app-dark .p-card,
+.dark .p-card {
+    background-color: #1e293b !important;
+    /* slate-800 */
+    color: #f1f5f9 !important;
+    border: 1px solid #334155 !important;
+    /* slate-700 */
+}
+
+.my-app-dark .p-card .p-card-title,
+.dark .p-card .p-card-title {
+    color: #f8fafc !important;
+}
+
+.my-app-dark .p-card .p-card-subtitle,
+.dark .p-card .p-card-subtitle {
+    color: #94a3b8 !important;
+}
+
+/* Inputs */
+.my-app-dark input,
+.my-app-dark textarea,
+.my-app-dark select,
+.my-app-dark .p-inputtext,
+.dark input,
+.dark textarea,
+.dark select,
+.dark .p-inputtext {
+    background-color: #0f172a !important;
+    /* slate-900 */
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+.my-app-dark input::placeholder,
+.my-app-dark textarea::placeholder,
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #64748b !important;
+}
+
+/* Dropdowns */
+.my-app-dark .p-dropdown,
+.dark .p-dropdown {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+}
+
+.my-app-dark .p-dropdown-panel,
+.dark .p-dropdown-panel {
+    background-color: #1e293b !important;
+    border: 1px solid #334155 !important;
+}
+
+.my-app-dark .p-dropdown-item,
+.dark .p-dropdown-item {
+    color: #f1f5f9 !important;
+}
+
+.my-app-dark .p-dropdown-item:hover,
+.dark .p-dropdown-item:hover {
+    background-color: #334155 !important;
+}

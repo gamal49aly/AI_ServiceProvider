@@ -1,141 +1,172 @@
-<!-- Hero Section -->
-<section class="relative pt-32 pb-32 lg:pt-48 lg:pb-40 overflow-hidden bg-slate-50 dark:bg-slate-900">
-    
-    <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute inset-0" style="background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 40px 40px; opacity: 0.7;"></div>
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-500/10 rounded-full blur-3xl -z-10"></div>
+<section
+    class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+
+    <div class="absolute inset-0 pointer-events-none opacity-60 dark:opacity-20">
+        <div class="absolute inset-0"
+            style="background-image: radial-gradient(#94a3b8 1px, transparent 1px); background-size: 40px 40px;">
+        </div>
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-500/10 dark:bg-indigo-500/20 rounded-full blur-3xl -z-10">
+        </div>
     </div>
 
     <div class="container mx-auto px-6 relative z-10 text-center">
-        
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-indigo-100 shadow-sm text-indigo-600 font-semibold text-sm mb-8 animate-fade-in-down">
+
+        <div
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900/50 shadow-sm text-indigo-600 dark:text-indigo-400 font-semibold text-sm mb-8 animate-fade-in-down">
             <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
             </span>
             <span>AI Powered Solutions v1.0</span>
         </div>
 
-        <h1 class="text-5xl md:text-7xl font-black text-slate-900 tracking-tight mb-6 leading-tight animate-fade-in-down">
+        <h1
+            class="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tight mb-6 leading-tight animate-fade-in-down">
             Transform Ideas into <br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+            <span
+                class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
                 Digital Reality
             </span>
         </h1>
 
-        <p class="text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-down" style="animation-delay: 0.1s">
-            Your all-in-one platform for converting images to text and processing audio. Smart tools designed to boost your productivity with high accuracy.
+        <p class="text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-down"
+            style="animation-delay: 0.1s">
+            Your all-in-one platform for converting images to text and processing audio. Smart tools designed to boost
+            your productivity.
         </p>
 
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20 animate-fade-in-down" style="animation-delay: 0.2s">
-            <button pButton label="Start Free Trial" icon="pi pi-rocket" routerLink="/pages/register" class="p-button-lg bg-indigo-600 border-none px-8 py-4 shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 transition-all hover:-translate-y-1"></button>
-            
-            <div class="flex items-center gap-3 text-slate-600 font-medium cursor-pointer hover:text-indigo-600 transition-colors group">
-                <div class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                    <i class="pi pi-play text-indigo-600 text-xl ml-1"></i>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20 animate-fade-in-down"
+            style="animation-delay: 0.2s">
+            <button pButton label="Get Started" icon="pi pi-rocket" (click)="handleGetStarted()"
+                class="p-button-lg bg-indigo-600 border-none px-8 py-4 shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 transition-all hover:-translate-y-1">
+            </button>
+
+            <div (click)="scrollToHowItWorks()"
+                class="flex items-center gap-3 text-slate-600 dark:text-slate-300 font-medium cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors group">
+                <div
+                    class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                    <i class="pi pi-arrow-down text-indigo-600 dark:text-indigo-400 text-xl ml-1"></i>
                 </div>
-                <span>Watch Demo</span>
+                <span>How it Works</span>
             </div>
-        </div>
-
-        <div class="relative mx-auto max-w-5xl animate-fade-in-down animate-float" style="animation-delay: 0.3s">
-             <div class="rounded-2xl border border-slate-200 bg-white/50 backdrop-blur-xl p-2 shadow-2xl shadow-slate-200/50">
-                 <div class="rounded-xl bg-white border border-slate-100 overflow-hidden aspect-[16/9] md:aspect-[21/9] relative flex flex-col">
-                    
-                    <div class="h-10 border-b border-slate-50 bg-slate-50/50 flex items-center px-4 gap-2">
-                        <div class="flex gap-1.5">
-                            <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                            <div class="w-3 h-3 rounded-full bg-amber-400"></div>
-                            <div class="w-3 h-3 rounded-full bg-green-400"></div>
-                        </div>
-                    </div>
-
-                    <div class="flex-1 flex items-center justify-center bg-slate-50/30 relative overflow-hidden">
-                         <div class="text-center z-10">
-                            <div class="flex gap-6 justify-center mb-6 opacity-80">
-                                <div class="w-20 h-20 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center shadow-sm">
-                                    <i class="pi pi-image text-3xl text-blue-500"></i>
-                                </div>
-                                <div class="w-20 h-20 bg-purple-50 border border-purple-100 rounded-2xl flex items-center justify-center shadow-sm">
-                                    <i class="pi pi-microphone text-3xl text-purple-500"></i>
-                                </div>
-                                <div class="w-20 h-20 bg-pink-50 border border-pink-100 rounded-2xl flex items-center justify-center shadow-sm">
-                                    <i class="pi pi-volume-up text-3xl text-pink-500"></i>
-                                </div>
-                            </div>
-                            <p class="text-slate-400 font-mono text-xs uppercase tracking-widest">System Dashboard Active</p>
-                         </div>
-
-                         <div class="absolute top-10 left-10 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl"></div>
-                         <div class="absolute bottom-10 right-10 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl"></div>
-                    </div>
-                 </div>
-             </div>
         </div>
     </div>
 </section>
 
-<!-- Services Section -->
-<section class="py-24 px-6 bg-white border-t border-slate-100">
+<section id="how-it-works"
+    class="py-16 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 transition-colors duration-300">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center relative">
+            <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-100 dark:bg-slate-800 -z-0"></div>
+
+            <div class="relative z-10 bg-white dark:bg-slate-900 p-4">
+                <div
+                    class="w-16 h-16 mx-auto bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800 rounded-2xl flex items-center justify-center text-2xl font-bold mb-4 shadow-sm">
+                    1</div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Upload File</h3>
+                <p class="text-slate-500 dark:text-slate-400">Upload your image or audio file securely to our platform.
+                </p>
+            </div>
+
+            <div class="relative z-10 bg-white dark:bg-slate-900 p-4">
+                <div
+                    class="w-16 h-16 mx-auto bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-800 rounded-2xl flex items-center justify-center text-2xl font-bold mb-4 shadow-sm">
+                    2</div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">AI Processing</h3>
+                <p class="text-slate-500 dark:text-slate-400">Our advanced AI models analyze and convert your data
+                    instantly.</p>
+            </div>
+
+            <div class="relative z-10 bg-white dark:bg-slate-900 p-4">
+                <div
+                    class="w-16 h-16 mx-auto bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 border border-pink-100 dark:border-pink-800 rounded-2xl flex items-center justify-center text-2xl font-bold mb-4 shadow-sm">
+                    3</div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Get Results</h3>
+                <p class="text-slate-500 dark:text-slate-400">Download your text, audio, or analysis in your preferred
+                    format.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="services-section"
+    class="py-24 px-6 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900 transition-colors duration-300">
     <div class="container mx-auto max-w-7xl">
         <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Our Smart Services</h2>
-            <p class="text-slate-500 max-w-xl mx-auto text-lg">We offer a range of solutions based on the latest AI technologies to make your daily tasks easier.</p>
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">Our Smart Services</h2>
+            <p class="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-lg">Choose a service to start.</p>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-            
-            <!-- OCR Service -->
-            <div class="group bg-white rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-300 relative overflow-hidden cursor-pointer">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 rounded-bl-full -z-0 transition-transform group-hover:scale-110 duration-500"></div>
-                
+
+            <div class="group bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-blue-100 dark:hover:border-blue-900 transition-all duration-300 relative overflow-hidden cursor-pointer"
+                routerLink="/features/image-parser">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 dark:bg-blue-900/20 rounded-bl-full -z-0 transition-transform group-hover:scale-110 duration-500">
+                </div>
                 <div class="relative z-10">
-                    <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors duration-300">
-                        <i class="pi pi-image text-2xl text-blue-600 group-hover:text-white transition-colors"></i>
+                    <div
+                        class="w-14 h-14 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors duration-300">
+                        <i
+                            class="pi pi-image text-2xl text-blue-600 dark:text-blue-400 group-hover:text-white transition-colors"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">Optical Character Recognition</h3>
-                    <p class="text-slate-500 mb-6 leading-relaxed text-sm">
-                        Convert any scanned image or document into highly accurate, editable, and searchable text.
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Image Parser</h3>
+                    <p class="text-slate-500 dark:text-slate-400 mb-6 leading-relaxed text-sm">
+                        Extract text from images using advanced OCR technology.
                     </p>
-                    <a routerLink="/features/image-parser" class="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 text-sm">
-                        Try Service <i class="pi pi-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
-                    </a>
+                    <span
+                        class="inline-flex items-center text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 text-sm">
+                        Try Service <i
+                            class="pi pi-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
+                    </span>
                 </div>
             </div>
 
-            <!-- STT Service -->
-            <div class="group bg-white rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:border-purple-100 transition-all duration-300 relative overflow-hidden cursor-pointer">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-purple-50/50 rounded-bl-full -z-0 transition-transform group-hover:scale-110 duration-500"></div>
-                
+            <div class="group bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-purple-100 dark:hover:border-purple-900 transition-all duration-300 relative overflow-hidden cursor-pointer"
+                routerLink="/features/stt">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-purple-50/50 dark:bg-purple-900/20 rounded-bl-full -z-0 transition-transform group-hover:scale-110 duration-500">
+                </div>
                 <div class="relative z-10">
-                    <div class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-600 transition-colors duration-300">
-                        <i class="pi pi-microphone text-2xl text-purple-600 group-hover:text-white transition-colors"></i>
+                    <div
+                        class="w-14 h-14 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-600 transition-colors duration-300">
+                        <i
+                            class="pi pi-microphone text-2xl text-purple-600 dark:text-purple-400 group-hover:text-white transition-colors"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">Audio to Text</h3>
-                    <p class="text-slate-500 mb-6 leading-relaxed text-sm">
-                        Record voice notes or upload audio files and convert them to written text in seconds.
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Speech to Text</h3>
+                    <p class="text-slate-500 dark:text-slate-400 mb-6 leading-relaxed text-sm">
+                        Convert your voice recordings into editable text.
                     </p>
-                    <a routerLink="/features/stt" class="inline-flex items-center text-purple-600 font-semibold hover:text-purple-700 text-sm">
-                        Try Service <i class="pi pi-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
-                    </a>
+                    <span
+                        class="inline-flex items-center text-purple-600 dark:text-purple-400 font-semibold hover:text-purple-700 dark:hover:text-purple-300 text-sm">
+                        Try Service <i
+                            class="pi pi-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
+                    </span>
                 </div>
             </div>
 
-            <!-- TTS Service -->
-            <div class="group bg-white rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:border-pink-100 transition-all duration-300 relative overflow-hidden cursor-pointer">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-pink-50/50 rounded-bl-full -z-0 transition-transform group-hover:scale-110 duration-500"></div>
-                
+            <div class="group bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-pink-100 dark:hover:border-pink-900 transition-all duration-300 relative overflow-hidden cursor-pointer"
+                routerLink="/features/tts">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-pink-50/50 dark:bg-pink-900/20 rounded-bl-full -z-0 transition-transform group-hover:scale-110 duration-500">
+                </div>
                 <div class="relative z-10">
-                    <div class="w-14 h-14 bg-pink-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-pink-600 transition-colors duration-300">
-                        <i class="pi pi-volume-up text-2xl text-pink-600 group-hover:text-white transition-colors"></i>
+                    <div
+                        class="w-14 h-14 bg-pink-50 dark:bg-pink-900/30 rounded-xl flex items-center justify-center mb-6 group-hover:bg-pink-600 transition-colors duration-300">
+                        <i
+                            class="pi pi-volume-up text-2xl text-pink-600 dark:text-pink-400 group-hover:text-white transition-colors"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">Text to Speech</h3>
-                    <p class="text-slate-500 mb-6 leading-relaxed text-sm">
-                        Write any text and listen to it in a natural human voice, ideal for creating audio content.
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Text to Speech</h3>
+                    <p class="text-slate-500 dark:text-slate-400 mb-6 leading-relaxed text-sm">
+                        Turn your written text into natural-sounding speech.
                     </p>
-                    <a routerLink="/features/tts" class="inline-flex items-center text-pink-600 font-semibold hover:text-pink-700 text-sm">
-                        Try Service <i class="pi pi-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
-                    </a>
+                    <span
+                        class="inline-flex items-center text-pink-600 dark:text-pink-400 font-semibold hover:text-pink-700 dark:hover:text-pink-300 text-sm">
+                        Try Service <i
+                            class="pi pi-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
+                    </span>
                 </div>
             </div>
 
@@ -143,169 +174,75 @@
     </div>
 </section>
 
-<!-- Pricing Plans Section -->
-<section class="py-24 px-6 bg-gradient-to-br from-slate-50 to-indigo-50">
+<section
+    class="py-24 px-6 bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-950 dark:to-indigo-950/20 transition-colors duration-300">
     <div class="container mx-auto max-w-7xl">
-        
-        <!-- Section Header -->
         <div class="text-center mb-16">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 font-semibold text-sm mb-4">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 font-semibold text-sm mb-4">
                 <i class="pi pi-star-fill text-xs"></i>
                 <span>Flexible Pricing</span>
             </div>
-            <h2 class="text-3xl md:text-5xl font-bold text-slate-900 mb-4">
+            <h2 class="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
                 Choose Your Perfect Plan
             </h2>
-            <p class="text-slate-600 max-w-2xl mx-auto text-lg">
+            <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-lg">
                 Start free and scale as you grow. All plans include access to our AI-powered services.
             </p>
         </div>
 
-        <!-- Loading State -->
-        @if (loadingPlans && plans.length === 0) {
-            <div class="text-center py-12">
-                <i class="pi pi-spinner pi-spin text-4xl text-indigo-600"></i>
-                <p class="mt-4 text-slate-600">Loading plans...</p>
-            </div>
-        }
-
-        <!-- Pricing Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             @for (plan of plans; track plan.id) {
-                <div class="relative group">
-                    
-                    <!-- Popular Badge -->
-                    @if (plan.name === 'Pro Plan') {
-                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                            <span class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                                ⭐ MOST POPULAR
-                            </span>
-                        </div>
-                    }
-                    
-                    <!-- Card -->
-                    <div [ngClass]="{
-                        'border-2 border-indigo-600 shadow-2xl shadow-indigo-200/50 scale-105': plan.name === 'Pro Plan',
-                        'border border-slate-200 shadow-lg hover:shadow-xl': plan.name !== 'Pro Plan'
-                    }" 
-                    class="bg-white rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
-                        
-                        <!-- Plan Header -->
-                        <div class="text-center mb-8">
-                            <h3 class="text-2xl font-bold text-slate-900 mb-2">{{ plan.name }}</h3>
-                            <div class="flex items-baseline justify-center gap-1">
-                                <span class="text-5xl font-extrabold text-indigo-600">
-                                    ${{ plan.price }}
-                                </span>
-                                <span class="text-slate-500 font-medium">/{{ plan.billingCycle }}</span>
-                            </div>
-                        </div>
+            <div class="relative group">
+                @if (plan.name === 'Pro Plan') {
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                    <span
+                        class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
+                        ⭐ MOST POPULAR
+                    </span>
+                </div>
+                }
 
-                        <!-- Features List -->
-                        <div class="space-y-4 mb-8 flex-grow">
-                            <div class="flex items-start gap-3">
-                                <div class="mt-1 flex-shrink-0">
-                                    <i class="pi pi-check-circle text-green-500 text-lg"></i>
-                                </div>
-                                <span class="text-slate-700">
-                                    <strong class="text-slate-900">
-                                        {{ plan.maxUsagePerMonth === -1 ? 'Unlimited' : plan.maxUsagePerMonth }}
-                                    </strong> requests per month
-                                </span>
-                            </div>
-                            
-                            <div class="flex items-start gap-3">
-                                <div class="mt-1 flex-shrink-0">
-                                    <i class="pi pi-check-circle text-green-500 text-lg"></i>
-                                </div>
-                                <span class="text-slate-700">All AI features included</span>
-                            </div>
-                            
-                            <div class="flex items-start gap-3">
-                                <div class="mt-1 flex-shrink-0">
-                                    <i class="pi pi-check-circle text-green-500 text-lg"></i>
-                                </div>
-                                <span class="text-slate-700">Image Parser & OCR</span>
-                            </div>
-                            
-                            <div class="flex items-start gap-3">
-                                <div class="mt-1 flex-shrink-0">
-                                    <i class="pi pi-check-circle text-green-500 text-lg"></i>
-                                </div>
-                                <span class="text-slate-700">
-                                    {{ plan.name === 'Free Tier' ? 'Community support' : 
-                                       plan.name === 'Enterprise' ? 'Dedicated support & account manager' : 
-                                       '24/7 Priority support' }}
-                                </span>
-                            </div>
+                <div [ngClass]="{
+                        'border-2 border-indigo-600 dark:border-indigo-500 shadow-2xl shadow-indigo-200/50 dark:shadow-none scale-105': plan.name === 'Pro Plan',
+                        'border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl': plan.name !== 'Pro Plan'
+                    }"
+                    class="bg-white dark:bg-slate-900 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
 
-                            @if (plan.name === 'Enterprise') {
-                                <div class="flex items-start gap-3">
-                                    <div class="mt-1 flex-shrink-0">
-                                        <i class="pi pi-check-circle text-green-500 text-lg"></i>
-                                    </div>
-                                    <span class="text-slate-700">Custom integrations</span>
-                                </div>
-                                
-                                <div class="flex items-start gap-3">
-                                    <div class="mt-1 flex-shrink-0">
-                                        <i class="pi pi-check-circle text-green-500 text-lg"></i>
-                                    </div>
-                                    <span class="text-slate-700">SLA guarantee</span>
-                                </div>
-                            }
-
-                            @if (plan.name === 'Pro Plan') {
-                                <div class="flex items-start gap-3">
-                                    <div class="mt-1 flex-shrink-0">
-                                        <i class="pi pi-check-circle text-green-500 text-lg"></i>
-                                    </div>
-                                    <span class="text-slate-700">Advanced analytics</span>
-                                </div>
-                            }
-                        </div>
-
-                        <!-- CTA Button -->
-                        <div class="mt-auto">
-                            @if (plan.price === 0) {
-                                <button 
-                                    pButton 
-                                    label="Start Free" 
-                                    icon="pi pi-arrow-right"
-                                    routerLink="/pages/register"
-                                    class="w-full p-button-outlined p-button-lg border-2 hover:bg-slate-50">
-                                </button>
-                            } @else {
-                                <button 
-                                    pButton 
-                                    [label]="plan.name === 'Pro Plan' ? 'Get Started' : 'Contact Sales'"
-                                    icon="pi pi-shopping-cart"
-                                    routerLink="/subscription"
-                                    [ngClass]="{
-                                        'bg-indigo-600 border-indigo-600 hover:bg-indigo-700': plan.name === 'Pro Plan',
-                                        'bg-slate-900 border-slate-900 hover:bg-slate-800': plan.name === 'Enterprise'
-                                    }"
-                                    class="w-full p-button-lg shadow-lg">
-                                </button>
-                            }
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">{{ plan.name }}</h3>
+                        <div class="flex items-baseline justify-center gap-1">
+                            <span class="text-5xl font-extrabold text-indigo-600 dark:text-indigo-400">${{ plan.price
+                                }}</span>
+                            <span class="text-slate-500 dark:text-slate-400 font-medium">/{{ plan.billingCycle }}</span>
                         </div>
                     </div>
+
+                    <div class="space-y-4 mb-8 flex-grow">
+                        <div class="flex items-start gap-3">
+                            <i class="pi pi-check-circle text-green-500 text-lg mt-1"></i>
+                            <span class="text-slate-700 dark:text-slate-300"><strong>{{ plan.maxUsagePerMonth === -1 ?
+                                    'Unlimited' :
+                                    plan.maxUsagePerMonth }}</strong> requests/mo</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="pi pi-check-circle text-green-500 text-lg mt-1"></i>
+                            <span class="text-slate-700 dark:text-slate-300">All AI Services</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto">
+                        @if (plan.price === 0) {
+                        <button pButton label="Start Free" routerLink="/pages/register"
+                            class="w-full p-button-outlined p-button-lg border-2 dark:text-white dark:border-slate-600 dark:hover:bg-slate-800"></button>
+                        } @else {
+                        <button pButton label="Get Started" routerLink="/subscription"
+                            class="w-full p-button-lg bg-indigo-600 border-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500"></button>
+                        }
+                    </div>
                 </div>
+            </div>
             }
         </div>
-
-        <!-- Bottom CTA -->
-        <div class="text-center mt-16">
-            <p class="text-slate-600 mb-4">
-                Not sure which plan is right for you? 
-                <a routerLink="/subscription" class="text-indigo-600 font-semibold hover:underline">
-                    Compare all features →
-                </a>
-            </p>
-            <p class="text-sm text-slate-500">
-                All plans come with a 14-day money-back guarantee. No questions asked.
-            </p>
-        </div>
-
     </div>
 </section>
