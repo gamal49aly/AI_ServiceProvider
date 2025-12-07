@@ -1,0 +1,134 @@
+<p-toast></p-toast>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 py-16 px-4">
+  <div class="max-w-7xl mx-auto">
+    
+    <!-- Header -->
+    <div class="text-center mb-16">
+      <h1 class="text-5xl font-extrabold text-slate-900 mb-4">
+        Choose Your Plan
+      </h1>
+      <p class="text-xl text-slate-600">
+        Select the perfect plan for your AI needs
+      </p>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading && plans.length === 0) {
+      <div class="text-center py-12">
+        <i class="pi pi-spinner pi-spin text-4xl text-indigo-600"></i>
+        <p class="mt-4 text-slate-600">Loading plans...</p>
+      </div>
+    }
+
+    <!-- Pricing Cards -->
+    <div class="grid md:grid-cols-3 gap-8">
+      @for (plan of plans; track plan.id) {
+        <div class="relative">
+          <!-- Popular Badge -->
+          @if (plan.name === 'Pro Plan') {
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+              <span class="bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
+                ⭐ POPULAR
+              </span>
+            </div>
+          }
+          
+          <p-card 
+            [styleClass]="getPlanCardClass(plan)"
+            class="h-full">
+            
+            <ng-template pTemplate="header">
+              <div class="p-6 text-center bg-gradient-to-br from-indigo-50 to-white">
+                <h3 class="text-2xl font-bold text-slate-900">{{ plan.name }}</h3>
+                <div class="mt-4">
+                  <span class="text-5xl font-extrabold text-indigo-600">
+                    ${{ plan.price }}
+                  </span>
+                  <span class="text-slate-600">/{{ plan.billingCycle }}</span>
+                </div>
+              </div>
+            </ng-template>
+
+            <div class="space-y-4 min-h-[200px]">
+              <!-- Requests Feature -->
+              <div class="flex items-center gap-3">
+                <i class="pi pi-check-circle text-green-500 text-lg"></i>
+                <span class="text-slate-700">
+                  <strong>
+                    {{ plan.maxUsagePerMonth === -1 ? 'Unlimited' : plan.maxUsagePerMonth }}
+                  </strong> requests/month
+                </span>
+              </div>
+              
+              <!-- Additional Features -->
+              <div class="flex items-center gap-3">
+                <i class="pi pi-check-circle text-green-500 text-lg"></i>
+                <span class="text-slate-700">All AI features</span>
+              </div>
+              
+              <div class="flex items-center gap-3">
+                <i class="pi pi-check-circle text-green-500 text-lg"></i>
+                <span class="text-slate-700">Image Parser</span>
+              </div>
+              
+              <div class="flex items-center gap-3">
+                <i class="pi pi-check-circle text-green-500 text-lg"></i>
+                <span class="text-slate-700">
+                  {{ plan.name === 'Free Tier' ? 'Community support' : '24/7 Priority Support' }}
+                </span>
+              </div>
+
+              @if (plan.name === 'Enterprise') {
+                <div class="flex items-center gap-3">
+                  <i class="pi pi-check-circle text-green-500 text-lg"></i>
+                  <span class="text-slate-700">Dedicated account manager</span>
+                </div>
+              }
+            </div>
+
+            <ng-template pTemplate="footer">
+              @if (plan.isCurrentPlan) {
+                <button 
+                  pButton 
+                  label="Current Plan" 
+                  icon="pi pi-check"
+                  class="w-full p-button-outlined p-button-success"
+                  [disabled]="true">
+                </button>
+              } @else if (plan.price === 0) {
+                <button 
+                  pButton 
+                  label="Free Forever" 
+                  icon="pi pi-heart"
+                  class="w-full p-button-outlined p-button-secondary"
+                  [disabled]="true">
+                </button>
+              } @else {
+                <button 
+                  pButton 
+                  [label]="checkoutLoading === plan.id ? 'Processing...' : 'Upgrade Now'" 
+                  icon="pi pi-shopping-cart"
+                  class="w-full bg-indigo-600 border-indigo-600 hover:bg-indigo-700"
+                  [loading]="checkoutLoading === plan.id"
+                  [disabled]="!!checkoutLoading"
+                  (click)="subscribe(plan.id)">
+                </button>
+              }
+            </ng-template>
+          </p-card>
+        </div>
+      }
+    </div>
+
+    <!-- Features Comparison -->
+    <div class="mt-16 text-center">
+      <p class="text-slate-600">
+        All plans include access to our AI-powered services. 
+        <a class="text-indigo-600 font-semibold hover:underline cursor-pointer">
+          Compare features →
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>

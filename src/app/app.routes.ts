@@ -6,7 +6,11 @@ import { RegisterComponent } from './pages/register/register.component';
 // import { ImageParserComponent } from './features/image-parser/image-parser.component';
 // import { SttComponent } from './features/speech-to-text/';
 // import { TtsComponent } from './features/tts/tts.component';
-import { authGuard } from './core/guards/auth.guard'; // عشان نستخدمه قدام
+import { authGuard } from './core/guards/auth.guard';
+import { SubscriptionComponent } from './pages/subscription/subscription.component';
+import { SubscriptionSuccessComponent } from './pages/subscription/subscription-success/subscription-success.component';
+import { SubscriptionCancelComponent } from './pages/subscription/subscription-cancel/subscription-cancel.component';
+
 
 export const routes: Routes = [
   // Public Routes
@@ -14,11 +18,25 @@ export const routes: Routes = [
   { path: 'pages/login', component: LoginComponent },
   { path: 'pages/register', component: RegisterComponent },
 
-  // // Protected Routes
-  // { path: 'features/image-parser', component: ImageParserComponent, canActivate: [authGuard] },
-  // { path: 'features/stt', component: SttComponent, canActivate: [authGuard] },
-  // { path: 'features/tts', component: TtsComponent, canActivate: [authGuard] },
 
-  // Wildcard
+    { 
+    path: 'subscription', 
+    component: SubscriptionComponent, 
+    canActivate: [authGuard] 
+  },
+  { 
+    path: 'subscription/success', 
+    component: SubscriptionSuccessComponent, 
+    canActivate: [authGuard] 
+  },
+  { 
+    path: 'subscription/cancel', 
+    component: SubscriptionCancelComponent, 
+    canActivate: [authGuard] 
+  },
+
+
   { path: '**', redirectTo: '' }
 ];
+
+
