@@ -79,21 +79,27 @@ export class HeaderComponent {
 
   // Menu Items
   items = [
-    {
-      label: 'Home',
-      icon: 'pi pi-home',
-      routerLink: '/',
-      styleClass: 'font-medium text-slate-600 hover:text-indigo-600'
-    },
-    {
-      label: 'Services',
-      icon: 'pi pi-objects-column',
-      styleClass: 'font-medium text-slate-600',
-      items: [
-        { label: 'Image Parser', icon: 'pi pi-image', routerLink: '/features/image-parser' },
-        { label: 'Speech to Text', icon: 'pi pi-microphone', routerLink: '/features/stt' },
-        { label: 'Text to Speech', icon: 'pi pi-volume-up', routerLink: '/features/tts' }
-      ]
-    }
-  ];
+  {
+    label: 'Home',
+    icon: 'pi pi-home',
+    routerLink: '/',
+    styleClass: 'font-medium text-slate-600 hover:text-indigo-600'
+  },
+  {
+    label: 'Subscription',
+    icon: 'pi pi-star',
+    routerLink: '/subscription',
+    styleClass: 'font-medium text-slate-600 hover:text-indigo-600'
+  },
+  {
+    label: 'Services',
+    icon: 'pi pi-objects-column',
+    styleClass: 'font-medium text-slate-600',
+    items: [
+      { label: 'Image Parser', icon: 'pi pi-image', routerLink: '/features/image-parser' },
+      { label: 'Speech to Text', icon: 'pi pi-microphone', routerLink: '/features/stt' },
+      { label: 'Text to Speech', icon: 'pi pi-volume-up', routerLink: '/features/tts' }
+    ]
+  }
+];
 }
