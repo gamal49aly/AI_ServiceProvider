@@ -13,7 +13,18 @@ import { ChatbotWidgetComponent } from './shared/components/chatbot-widget/chatb
     FooterComponent,
     ChatbotWidgetComponent,
   ],
-  templateUrl: './app.html',
+  template: `
+    <div class="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+      <app-header class="sticky top-0 z-50"></app-header>
+
+      <main class="grow">
+        <router-outlet></router-outlet>
+      </main>
+
+      <app-footer></app-footer>
+    </div>
+    <app-chatbot-widget></app-chatbot-widget>
+  `,
   styleUrl: './app.css',
 })
 export class AppComponent {

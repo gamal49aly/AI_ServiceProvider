@@ -1,1 +1,106 @@
-<p>tts works!</p>
+<p-toast></p-toast>
+
+<div class="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4 transition-colors duration-300">
+    <div class="container mx-auto max-w-5xl">
+
+        <div class="text-center mb-12 animate-fade-in-down">
+            <div
+                class="inline-flex items-center justify-center w-16 h-16 bg-pink-100 dark:bg-pink-900/30 rounded-2xl mb-4">
+                <i class="pi pi-volume-up text-3xl text-pink-600 dark:text-pink-400"></i>
+            </div>
+            <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">Text to Speech</h1>
+            <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                Turn your written content into lifelike audio.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <div class="lg:col-span-2 space-y-6">
+                <p-card styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800">
+                    <ng-template pTemplate="title">
+                        <span class="text-xl font-bold text-slate-800 dark:text-white">Enter Text</span>
+                    </ng-template>
+
+                    <div class="mb-6">
+                        <textarea rows="8"
+                            class="w-full p-4 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 rounded-xl focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none resize-none text-lg leading-relaxed placeholder-slate-400"
+                            placeholder="Type or paste your text here..." [(ngModel)]="textToConvert">
+            </textarea>
+                        <div class="flex justify-between mt-2 text-xs text-slate-400 dark:text-slate-500">
+                            <span>{{ textToConvert.length }} characters</span>
+                            <span class="cursor-pointer hover:text-pink-600 dark:hover:text-pink-400"
+                                (click)="clear()">Clear text</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Select
+                                Voice</label>
+                            <select [(ngModel)]="selectedVoice"
+                                class="w-full p-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:border-pink-500 focus:ring-1 focus:ring-pink-500 outline-none text-slate-700 dark:text-slate-200 cursor-pointer appearance-none">
+                                <option *ngFor="let voice of voices" [value]="voice.code">
+                                    {{ voice.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button pButton label="Generate Audio" icon="pi pi-wave-pulse"
+                        class="w-full p-button-lg bg-pink-600 border-pink-600 hover:bg-pink-700 dark:bg-pink-700 dark:hover:bg-pink-600 text-white"
+                        [loading]="isLoading" [disabled]="!textToConvert" (click)="generateAudio()">
+                    </button>
+                </p-card>
+            </div>
+
+            <div class="lg:col-span-1">
+                <p-card
+                    styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800 bg-slate-900 text-white relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2">
+                    </div>
+
+                    <div class="relative z-10 flex flex-col h-full justify-center items-center text-center p-4">
+
+                        <div *ngIf="!isAudioReady && !isLoading">
+                            <div
+                                class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <i class="pi pi-headphones text-3xl text-slate-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-white">Ready to Speak</h3>
+                            <p class="text-slate-400 text-sm">Enter text and click generate to listen.</p>
+                        </div>
+
+                        <div *ngIf="isLoading">
+                            <div class="flex gap-1 justify-center mb-6 h-12 items-end">
+                                <div class="w-2 bg-pink-500 animate-[bounce_1s_infinite] h-4"></div>
+                                <div class="w-2 bg-pink-500 animate-[bounce_1s_infinite_0.2s] h-8"></div>
+                                <div class="w-2 bg-pink-500 animate-[bounce_1s_infinite_0.4s] h-6"></div>
+                                <div class="w-2 bg-pink-500 animate-[bounce_1s_infinite_0.1s] h-10"></div>
+                            </div>
+                            <p class="text-pink-400 animate-pulse">Synthesizing audio...</p>
+                        </div>
+
+                        <div *ngIf="isAudioReady" class="w-full animate-fade-in-down">
+                            <div
+                                class="w-24 h-24 bg-gradient-to-tr from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-pink-900/50">
+                                <i class="pi pi-play text-4xl ml-1 text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-1 text-white">Audio Ready</h3>
+                            <p class="text-pink-300 text-sm mb-8">High Quality</p>
+
+                            <div class="space-y-3 w-full">
+                                <button pButton label="Play Again" icon="pi pi-replay"
+                                    class="p-button-text text-slate-300 w-full hover:text-white"
+                                    (click)="speakBrowser(textToConvert)"></button>
+                            </div>
+                        </div>
+
+                    </div>
+                </p-card>
+            </div>
+
+        </div>
+    </div>
+</div>
