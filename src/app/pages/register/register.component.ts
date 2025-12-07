@@ -141,10 +141,13 @@ export class RegisterComponent {
     if (this.registerForm.valid) {
       this.loading = true;
 
+      // Ensure this object matches EXACTLY what your Swagger/Backend expects
       const registerData = {
         email: this.registerForm.value.email!,
         password: this.registerForm.value.password!,
-        displayName: this.registerForm.value.displayName!
+        
+        // التعديل هنا: غيرنا displayName لـ name
+        name: this.registerForm.value.displayName! 
       };
 
       this.authService.register(registerData).subscribe({
@@ -152,29 +155,42 @@ export class RegisterComponent {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: response.message || 'Account created successfully! Please login.'
+            detail: 'Account created successfully! Please login.'
           });
 
+          // Navigate to login after delay
           setTimeout(() => this.router.navigate(['/pages/login']), 1500);
         },
         error: (err) => {
           this.loading = false;
-          console.error('Registration Error:', err);
+          console.error('Registration Error Details:', err);
 
-          let errorMessage = 'Registration failed';
+          let errorMessage = 'Registration failed. Please check your data.';
 
+          // Logic to parse .NET Core Validation Errors
           if (err.error) {
-            if (typeof err.error === 'string') {
-              errorMessage = err.error;
-            } else if (err.error.message) {
-              errorMessage = err.error.message;
+            // 1. Handle "One or more validation errors occurred"
+            if (err.error.errors) {
+                // Get the first error message from the validation object
+                const firstKey = Object.keys(err.error.errors)[0];
+                if (firstKey && err.error.errors[firstKey].length > 0) {
+                    errorMessage = err.error.errors[firstKey][0];
+                }
+            } 
+            // 2. Handle Identity Framework array errors
+            else if (Array.isArray(err.error)) {
+                errorMessage = err.error[0].description || err.error[0].code;
+            }
+            // 3. Handle simple string messages
+            else if (typeof err.error === 'string') {
+                errorMessage = err.error;
             }
           }
 
           this.messageService.add({
             severity: 'error',
-            summary: 'Registration Error',
-            detail: errorMessage,
+            summary: 'Validation Error',
+            detail: errorMessage, // This will now show the EXACT reason from Backend
             life: 5000
           });
         }
