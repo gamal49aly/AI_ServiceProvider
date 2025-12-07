@@ -78,7 +78,7 @@ export class HeaderComponent {
   userSignal = computed(() => this.authService.currentUser());
 
   // Menu Items
-  items = [
+items = [
   {
     label: 'Home',
     icon: 'pi pi-home',
@@ -94,7 +94,7 @@ export class HeaderComponent {
   {
     label: 'Services',
     icon: 'pi pi-objects-column',
-    styleClass: 'font-medium text-slate-600',
+    styleClass: 'font-medium text-slate-600 hover:text-indigo-600',
     items: [
       { label: 'Image Parser', icon: 'pi pi-image', routerLink: '/features/image-parser' },
       { label: 'Speech to Text', icon: 'pi pi-microphone', routerLink: '/features/stt' },
