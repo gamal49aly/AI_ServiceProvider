@@ -21,7 +21,7 @@ export class AuthService {
   currentUser = signal<User | null>(this.getUserFromStorage());
 
   // REAL .NET API URL
-  private baseUrl = 'https://localhost:7049/api/Auth';
+  private baseUrl = 'https://localhost:7115/api/Auth';
 
   constructor() { }
 
@@ -30,7 +30,7 @@ export class AuthService {
     return this.http.post<any>(`${this.baseUrl}/login`, credentials).pipe(
       tap(response => {
         console.log('Backend Response:', response);
-        
+
         // Map .NET response to our User interface
         const user: User = {
           id: response.user.id,
@@ -38,7 +38,7 @@ export class AuthService {
           displayName: response.user.displayName,
           token: response.token
         };
-        
+
         this.saveUserToStorage(user);
         this.currentUser.set(user);
       })
@@ -46,7 +46,7 @@ export class AuthService {
   }
 
   // REGISTER ----------
-  register(data: { email: string; password: string; displayName: string }): Observable<any> {
+  register(data: { email: string; password: string; name: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/register`, data);
   }
 
