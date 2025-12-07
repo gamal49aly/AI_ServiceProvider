@@ -13,10 +13,8 @@ import { SubscriptionCancelComponent } from './pages/subscription/subscription-c
 
 
 export const routes: Routes = [
-  // Home Page
+  // Public Routes
   { path: '', component: HomeComponent },
-
-  // Authentication Pages
   { path: 'pages/login', component: LoginComponent },
   { path: 'pages/register', component: RegisterComponent },
 

@@ -4,9 +4,9 @@ import { Router } from '@angular/router';
 import { tap, Observable } from 'rxjs';
 
 export interface User {
-  userId: number;
+  id: string;  // Changed from userId to match .NET Guid
   email: string;
-  name: string;
+  displayName: string;  // Changed from 'name' to match .NET
   token: string;
 }
 
@@ -21,21 +21,24 @@ export class AuthService {
   currentUser = signal<User | null>(this.getUserFromStorage());
 
   // REAL .NET API URL
-  private baseUrl = 'https://localhost:7115/api/auth';
+  private baseUrl = 'https://localhost:7115/api/Auth';
 
   constructor() { }
 
   // LOGIN --------------
-  login(credentials: any): Observable<any> {
+  login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/login`, credentials).pipe(
       tap(response => {
         console.log('Backend Response:', response);
+
+        // Map .NET response to our User interface
         const user: User = {
-          userId: response.user?.userId || 0,
-          name: response.user?.name || 'User',
-          email: credentials.email,
-          token: response.token || response
+          id: response.user.id,
+          email: response.user.email,
+          displayName: response.user.displayName,
+          token: response.token
         };
+
         this.saveUserToStorage(user);
         this.currentUser.set(user);
       })
@@ -43,13 +46,8 @@ export class AuthService {
   }
 
   // REGISTER ----------
-  register(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/register`, data).pipe(
-      tap(() => {
-        // You can choose what to do after register.
-        // If backend returns the user + token, you can store it here.
-      })
-    );
+  register(data: { email: string; password: string; name: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/register`, data);
   }
 
   // LOGOUT ------------
