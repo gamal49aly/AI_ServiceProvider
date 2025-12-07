@@ -69,9 +69,8 @@ async subscribe(planId: string) {
       throw new Error('Failed to create checkout session');
     }
 
-    // Direct redirect without Stripe.js validation
-    // This always works regardless of @stripe/stripe-js version
-    window.location.href = `https://checkout.stripe.com/pay/${session.sessionId}`;
+    // Correct redirect URL format
+    window.location.href = `https://checkout.stripe.com/c/pay/${session.sessionId}`;
     
   } catch (error: any) {
     console.error('Subscription error:', error);
