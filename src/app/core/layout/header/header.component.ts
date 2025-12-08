@@ -12,12 +12,26 @@ import { AuthService } from '../../services/auth.service';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
-import { MenuItem } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MenuItem, ConfirmationService } from 'primeng/api';
+import { Menu } from 'primeng/menu';
+import { Popover } from 'primeng/popover';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, MenubarModule, ButtonModule, TooltipModule],
+  imports: [
+    RouterLink,
+    MenubarModule,
+    ButtonModule,
+    TooltipModule,
+    ConfirmDialogModule,
+    Menu,
+    Popover,
+  ],
+  providers: [ConfirmationService],
   template: `
+    <p-confirmDialog />
+
     <header class="sticky top-0 z-50 w-full">
       <nav
         class="w-full bg-surface-0 dark:bg-surface-900/50 backdrop-blur-md border-b border-surface-200/60 dark:border-surface-800 shadow-sm transition-all duration-300"
@@ -71,31 +85,35 @@ import { MenuItem } from 'primeng/api';
                 ></button>
                 } @else {
                 <div
-                  class="flex items-center gap-3 pl-4 border-l border-surface-200 dark:border-surface-700"
+                  class="flex items-center gap-2 pl-4 border-l border-surface-200 dark:border-surface-700"
                 >
                   <div class="hidden md:flex flex-col items-end">
-                    <span
-                      class="text-[10px] uppercase font-bold text-surface-400 dark:text-surface-500 tracking-wider"
-                      >User</span
-                    >
                     <span
                       class="text-sm font-bold text-surface-800 dark:text-surface-200"
                     >
                       {{ userSignal()?.displayName }}
                     </span>
                   </div>
-
-                  <div
-                    class="w-9 h-9 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center text-primary-700 dark:text-primary-300 font-bold border-2 border-white dark:border-surface-800 shadow-sm"
-                  >
-                    {{ userSignal()?.displayName?.charAt(0)?.toUpperCase() }}
+                  <div class="">
+                    <button
+                      #mydiv
+                      (click)="profileMenu.toggle($event)"
+                      class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900  text-primary-700 dark:text-primary-300 font-bold  dark:border-surface-800 shadow-sm"
+                    >
+                      {{ userSignal()?.displayName?.charAt(0)?.toUpperCase() }}
+                    </button>
+                    <p-menu
+                      #profileMenu
+                      popup="true"
+                      [model]="profileItems"
+                      appendTo="null"
+                    ></p-menu>
                   </div>
-
                   <button
                     pButton
-                    icon="pi pi-power-off"
-                    (click)="authService.logout()"
-                    class="p-button-rounded p-button-text p-button-danger hover:bg-red-50 dark:hover:bg-red-900/20 w-9 h-9"
+                    icon="pi pi-sign-out"
+                    (click)="onLogOut()"
+                    class="p-button-rounded p-button-text p-button-danger hover:bg-red-50 dark:hover:bg-red-900/20 w-10 h-10"
                     pTooltip="Logout"
                     tooltipPosition="bottom"
                   ></button>
@@ -117,6 +135,7 @@ import { MenuItem } from 'primeng/api';
 export class HeaderComponent {
   readonly authService = inject(AuthService);
   private readonly document = inject(DOCUMENT);
+  private readonly confirmationService = inject(ConfirmationService);
 
   readonly userSignal = computed(() => this.authService.currentUser());
 
@@ -158,7 +177,31 @@ export class HeaderComponent {
       ],
     },
   ];
+  readonly profileItems: MenuItem[] = [
+    {
+      label: 'options',
+      items: [
+        {
+          label: 'Profile',
+          icon: 'pi pi-user',
+          routerLink: '/profile',
+          styleClass: 'font-medium',
+        },
+        {
+          label: 'Settings',
+          icon: 'pi pi-cog',
 
+          styleClass: 'font-medium',
+        },
+        {
+          label: 'Logout',
+          icon: 'pi pi-sign-out',
+          command: () => this.onLogOut(),
+          styleClass: 'font-medium color-red-600',
+        },
+      ],
+    },
+  ];
   constructor() {
     // Initialize theme from localStorage
     this.initializeTheme();
@@ -200,5 +243,31 @@ export class HeaderComponent {
 
   private setStoredTheme(theme: string): void {
     localStorage.setItem('theme', theme);
+  }
+
+  onLogOut(): void {
+    this.confirmationService.confirm({
+      header: 'Confirm Logout',
+      message: 'Are you sure you want to logout?',
+      icon: 'pi pi-exclamation-triangle',
+      acceptIcon: 'pi pi-check',
+      rejectIcon: 'pi pi-times',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Logout',
+        severity: 'danger',
+      },
+
+      position: 'top',
+      acceptButtonStyleClass: 'mx-2',
+      rejectButtonStyleClass: 'mx-2',
+      accept: () => {
+        this.authService.logout();
+      },
+    });
   }
 }
