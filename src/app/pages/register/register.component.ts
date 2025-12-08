@@ -47,6 +47,20 @@ function passwordStrengthValidator(
   return !passwordValid ? { passwordStrength: true } : null;
 }
 
+// Password Match Validator
+function passwordMatchValidator(
+  formGroup: AbstractControl
+): ValidationErrors | null {
+  const password = formGroup.get('password')?.value;
+  const confirmPassword = formGroup.get('confirmPassword')?.value;
+
+  if (!password || !confirmPassword) {
+    return null;
+  }
+
+  return password === confirmPassword ? null : { passwordMismatch: true };
+}
+
 interface RegisterFormValue {
   displayName: string;
   email: string;
@@ -214,6 +228,34 @@ interface RegisterFormValue {
                 >
                 }
               </div>
+
+              <!-- Confirm Password Field -->
+              <div class="flex flex-col gap-2">
+                <label
+                  for="confirmPassword"
+                  class="font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  Confirm Password
+                </label>
+                <p-password
+                  inputId="confirmPassword"
+                  formControlName="confirmPassword"
+                  [toggleMask]="true"
+                  size="large"
+                  fluid="true"
+                  placeholder="••••••••"
+                  [feedback]="false"
+                  autocomplete="new-password"
+                />
+                @if (confirmPasswordInvalid()) {
+                <p-message
+                  id="confirmPassword-error"
+                  severity="error"
+                  styleClass="w-full"
+                  >{{ confirmPasswordErrorMessage() }}</p-message
+                >
+                }
+              </div>
             </div>
 
             <!-- Submit Button -->
@@ -329,14 +371,22 @@ export class RegisterComponent {
   // Signals for reactive state
   isLoading = signal(false);
 
-  registerForm: FormGroup = this.fb.group({
-    displayName: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    password: [
-      '',
-      [Validators.required, Validators.minLength(6), passwordStrengthValidator],
-    ],
-  });
+  registerForm: FormGroup = this.fb.group(
+    {
+      displayName: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          passwordStrengthValidator,
+        ],
+      ],
+      confirmPassword: ['', [Validators.required]],
+    },
+    { validators: passwordMatchValidator }
+  );
 
   displayNameInvalid(): boolean {
     const control = this.registerForm.get('displayName');
@@ -374,6 +424,25 @@ export class RegisterComponent {
     }
     if (control?.hasError('passwordStrength')) {
       return 'Password must contain uppercase, number, and special character';
+    }
+    return '';
+  }
+
+  confirmPasswordInvalid(): boolean {
+    const control = this.registerForm.get('confirmPassword');
+    const formTouched = control?.touched;
+    const hasError =
+      control?.invalid || this.registerForm.hasError('passwordMismatch');
+    return !!(hasError && formTouched);
+  }
+
+  confirmPasswordErrorMessage(): string {
+    const control = this.registerForm.get('confirmPassword');
+    if (control?.hasError('required')) {
+      return 'Please confirm your password';
+    }
+    if (this.registerForm.hasError('passwordMismatch')) {
+      return 'Passwords do not match';
     }
     return '';
   }
