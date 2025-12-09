@@ -65,12 +65,12 @@ async subscribe(planId: string) {
       .createCheckoutSession(planId)
       .toPromise();
 
-    if (!session) {
+    if (!session || !session.sessionUrl) {
       throw new Error('Failed to create checkout session');
     }
 
-    // Correct redirect URL format
-    window.location.href = `https://checkout.stripe.com/c/pay/${session.sessionId}`;
+    // Use the URL directly from Stripe
+    window.location.href = session.sessionUrl;
     
   } catch (error: any) {
     console.error('Subscription error:', error);
