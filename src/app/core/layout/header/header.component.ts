@@ -176,6 +176,12 @@ export class HeaderComponent {
         },
       ],
     },
+    {
+      label: 'About',
+      icon: 'pi pi-info',
+      routerLink: '/about',
+      styleClass: 'font-medium',
+    },
   ];
   readonly profileItems: MenuItem[] = [
     {
