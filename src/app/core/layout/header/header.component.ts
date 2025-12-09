@@ -15,7 +15,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MenuItem, ConfirmationService } from 'primeng/api';
 import { Menu } from 'primeng/menu';
-import { Popover } from 'primeng/popover';
 
 @Component({
   selector: 'app-header',
@@ -26,7 +25,6 @@ import { Popover } from 'primeng/popover';
     TooltipModule,
     ConfirmDialogModule,
     Menu,
-    Popover,
   ],
   providers: [ConfirmationService],
   template: `
@@ -140,7 +138,6 @@ export class HeaderComponent {
   readonly userSignal = computed(() => this.authService.currentUser());
 
   readonly isDarkMode = signal(false);
-
   readonly items: MenuItem[] = [
     {
       label: 'Home',
@@ -178,8 +175,14 @@ export class HeaderComponent {
     },
     {
       label: 'About',
-      icon: 'pi pi-info',
+      icon: 'pi pi-info-circle',
       routerLink: '/about',
+      styleClass: 'font-medium',
+    },
+    {
+      label: 'Contact',
+      icon: 'pi pi-envelope',
+      routerLink: '/contact',
       styleClass: 'font-medium',
     },
   ];
@@ -209,10 +212,7 @@ export class HeaderComponent {
     },
   ];
   constructor() {
-    // Initialize theme from localStorage
     this.initializeTheme();
-
-    //React to dark mode (signal) changes automatically
     effect(() => {
       this.updateTheme();
       this.persistTheme();
@@ -234,8 +234,12 @@ export class HeaderComponent {
     const html = this.document.documentElement;
     const isDark = this.isDarkMode();
 
+    // Toggle Classes
     html.classList.toggle('my-app-dark', isDark);
-    //html.classList.toggle('dark', isDark);
+    html.classList.toggle('dark', isDark);
+
+    // Toggle DaisyUI Theme Attribute
+    html.setAttribute('data-theme', isDark ? 'dark' : 'light');
   }
 
   private persistTheme(): void {
