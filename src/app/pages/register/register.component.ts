@@ -286,15 +286,16 @@ interface RegisterFormValue {
         </div>
       </section>
 
-      <!-- Hero Section -->
+      <!-- Side img Section -->
       <aside
         class="hidden lg:flex lg:w-1/2 bg-slate-900 relative items-center justify-center overflow-hidden"
         aria-label="Welcome message"
       >
         <div
-          class="absolute inset-0 bg-gradient-to-bl from-indigo-900 via-slate-900 to-black"
-          aria-hidden="true"
+          class="absolute inset-0 bg-gradient-to-br from-indigo-800 via-purple-900 to-black 
+         dark:bg-linear-to-tl dark:from-indigo-900 dark:via-slate-900 dark:to-slate-950"
         ></div>
+
         <div
           class="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-blue-500 rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-blob"
           aria-hidden="true"
