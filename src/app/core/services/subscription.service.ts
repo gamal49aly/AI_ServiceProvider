@@ -21,6 +21,7 @@ export interface SubscriptionStatus {
 
 export interface CheckoutSession {
   sessionId: string;
+   sessionUrl: string;
   publishableKey: string;
 }
 
