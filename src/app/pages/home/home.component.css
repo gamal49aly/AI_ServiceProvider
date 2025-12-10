@@ -1,27 +1,12 @@
-/* Custom Animations */
-
+/* Floating Animations */
 @keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-
-  50% {
-    transform: translateY(-20px) rotate(5deg);
-  }
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-20px) rotate(5deg); }
 }
 
 @keyframes float-reverse {
-
-  0%,
-  100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-
-  50% {
-    transform: translateY(20px) rotate(-5deg);
-  }
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(20px) rotate(-5deg); }
 }
 
 .float-icon {
@@ -32,24 +17,111 @@
   animation: float-reverse 7s ease-in-out infinite;
 }
 
+/* Fade in */
 @keyframes fade-in-down {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in-down {
-  animation: fade-in-down 0.6s ease-out forwards;
+  animation: fade-in-down .6s ease-out forwards;
   opacity: 0;
 }
 
-/* Smooth transitions */
-:host {
-  display: block;
+/* Hover Glow Base Behavior */
+.icon-hover-glow {
+  cursor: pointer;
+  transition: all .3s ease;
+}
+
+.icon-hover-glow:hover {
+  transform: scale(1.15) translateY(-8px);
+  opacity: 1 !important;
+}
+
+/* Dark Mode Amplification */
+.dark .icon-hover-glow:hover {
+  box-shadow:
+    0 0 60px currentColor,
+    0 0 90px currentColor,
+    0 0 120px currentColor !important;
+}
+
+/* COLOR-SPECIFIC GLOW RULES */
+.icon-hover-glow.bg-indigo-100:hover,
+.dark .icon-hover-glow.dark\:bg-indigo-900\/40:hover {
+  background-color: rgb(99, 102, 241) !important;
+  box-shadow: 0 0 40px rgba(99,102,241,.8), 0 0 80px rgba(99,102,241,.5) !important;
+}
+
+.icon-hover-glow.bg-purple-100:hover,
+.dark .icon-hover-glow.dark\:bg-purple-900\/40:hover {
+  background-color: rgb(168, 85, 247) !important;
+  box-shadow: 0 0 40px rgba(168,85,247,.8), 0 0 80px rgba(168,85,247,.5) !important;
+}
+
+.icon-hover-glow.bg-blue-100:hover,
+.dark .icon-hover-glow.dark\:bg-blue-900\/40:hover {
+  background-color: rgb(59,130,246) !important;
+  box-shadow: 0 0 40px rgba(59,130,246,.8), 0 0 80px rgba(59,130,246,.5) !important;
+}
+
+.icon-hover-glow.bg-green-100:hover,
+.dark .icon-hover-glow.dark\:bg-green-900\/40:hover {
+  background-color: rgb(34,197,94) !important;
+  box-shadow: 0 0 40px rgba(34,197,94,.8), 0 0 80px rgba(34,197,94,.5) !important;
+}
+
+.icon-hover-glow.bg-pink-100:hover,
+.dark .icon-hover-glow.dark\:bg-pink-900\/40:hover {
+  background-color: rgb(236,72,153) !important;
+  box-shadow: 0 0 40px rgba(236,72,153,.8), 0 0 80px rgba(236,72,153,.5) !important;
+}
+
+.icon-hover-glow.bg-orange-100:hover,
+.dark .icon-hover-glow.dark\:bg-orange-900\/40:hover {
+  background-color: rgb(249,115,22) !important;
+  box-shadow: 0 0 40px rgba(249,115,22,.8), 0 0 80px rgba(249,115,22,.5) !important;
+}
+
+.icon-hover-glow.bg-cyan-100:hover,
+.dark .icon-hover-glow.dark\:bg-cyan-900\/40:hover {
+  background-color: rgb(6,182,212) !important;
+  box-shadow: 0 0 40px rgba(6,182,212,.8), 0 0 80px rgba(6,182,212,.5) !important;
+}
+
+.icon-hover-glow.bg-violet-100:hover,
+.dark .icon-hover-glow.dark\:bg-violet-900\/40:hover {
+  background-color: rgb(139,92,246) !important;
+  box-shadow: 0 0 40px rgba(139,92,246,.8), 0 0 80px rgba(139,92,246,.5) !important;
+}
+
+.icon-hover-glow.bg-rose-100:hover,
+.dark .icon-hover-glow.dark\:bg-rose-900\/40:hover {
+  background-color: rgb(244,63,94) !important;
+  box-shadow: 0 0 40px rgba(244,63,94,.8), 0 0 80px rgba(244,63,94,.5) !important;
+}
+
+.icon-hover-glow.bg-amber-100:hover,
+.dark .icon-hover-glow.dark\:bg-amber-900\/40:hover {
+  background-color: rgb(245,158,11) !important;
+  box-shadow: 0 0 40px rgba(245,158,11,.8), 0 0 80px rgba(245,158,11,.5) !important;
+}
+
+.icon-hover-glow.bg-teal-100:hover,
+.dark .icon-hover-glow.dark\:bg-teal-900\/40:hover {
+  background-color: rgb(20,184,166) !important;
+  box-shadow: 0 0 40px rgba(20,184,166,.8), 0 0 80px rgba(20,184,166,.5) !important;
+}
+
+.icon-hover-glow.bg-lime-100:hover,
+.dark .icon-hover-glow.dark\:bg-lime-900\/40:hover {
+  background-color: rgb(132,204,22) !important;
+  box-shadow: 0 0 40px rgba(132,204,22,.8), 0 0 80px rgba(132,204,22,.5) !important;
+}
+
+/* Make SVG glow on hover */
+.icon-hover-glow:hover svg {
+  color: white !important;
+  filter: brightness(1.5) drop-shadow(0 0 10px rgba(255,255,255,0.8));
 }
