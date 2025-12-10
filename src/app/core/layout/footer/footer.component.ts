@@ -1,155 +1,85 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ButtonModule, InputGroupModule, InputGroupAddonModule, InputTextModule],
   template: `
-    <footer
-      class="bg-surface-0 dark:bg-surface-950 text-surface-600 dark:text-surface-400 py-12 border-t border-surface-200 dark:border-surface-800 relative mt-auto"
-    >
-      <div
-        class="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 opacity-70"
-      ></div>
+    <footer class="bg-slate-950 text-slate-400 py-16 border-t border-slate-900 relative mt-auto">
+      
+      <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 opacity-70"></div>
 
       <div class="container mx-auto px-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          <div class="md:col-span-2">
-            <a
-              routerLink="/"
-              class="flex items-center gap-2 mb-6 group cursor-pointer w-fit"
-            >
-              <div
-                class="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 dark:shadow-indigo-900/30 group-hover:scale-110 transition-transform"
-              >
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+          
+          <div class="lg:col-span-1">
+            <a routerLink="/" class="flex items-center gap-2 mb-6 group cursor-pointer w-fit">
+              <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-900/20 group-hover:scale-110 transition-transform">
                 <i class="pi pi-bolt text-xl"></i>
               </div>
-              <span
-                class="text-2xl font-bold text-surface-900 dark:text-surface-50 tracking-tight"
-                >AI Solutions</span
-              >
+              <span class="text-2xl font-bold text-white tracking-tight">AI Solutions</span>
             </a>
-            <p
-              class="text-surface-600 dark:text-surface-400 leading-relaxed max-w-sm mb-6 text-sm"
-            >
-              Empowering developers with state-of-the-art AI tools. Convert
-              images, audio, and text with ease using our secure and scalable
-              platform.
+            <p class="text-slate-400 leading-relaxed text-sm mb-6">
+              Transforming businesses with intelligent AI services. Secure, scalable, and easy to integrate.
             </p>
+            <div class="flex gap-3">
+              <a href="#" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all duration-300"><i class="pi pi-github"></i></a>
+              <a href="#" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all duration-300"><i class="pi pi-linkedin"></i></a>
+              <a href="#" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:bg-sky-500 hover:text-white hover:border-sky-500 transition-all duration-300"><i class="pi pi-twitter"></i></a>
+            </div>
           </div>
 
           <div>
-            <h4
-              class="text-surface-900 dark:text-surface-50 font-bold mb-6 tracking-wide text-sm uppercase"
-            >
-              Quick Links
-            </h4>
+            <h4 class="text-white font-bold mb-6 tracking-wide uppercase text-xs">Product</h4>
             <ul class="space-y-3 text-sm">
-              <li>
-                <a
-                  routerLink="/"
-                  class="text-surface-600 dark:text-surface-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2 cursor-pointer group"
-                >
-                  <i
-                    class="pi pi-angle-right text-xs opacity-0 group-hover:opacity-100 transition-opacity text-indigo-600 dark:text-indigo-400"
-                  ></i>
-                  Home
-                </a>
-              </li>
-              <li>
-                <a
-                  routerLink="/about"
-                  class="text-surface-600 dark:text-surface-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2 cursor-pointer group"
-                >
-                  <i
-                    class="pi pi-angle-right text-xs opacity-0 group-hover:opacity-100 transition-opacity text-indigo-600 dark:text-indigo-400"
-                  ></i>
-                  About Project
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-surface-600 dark:text-surface-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2 cursor-pointer group"
-                >
-                  <i
-                    class="pi pi-angle-right text-xs opacity-0 group-hover:opacity-100 transition-opacity text-indigo-600 dark:text-indigo-400"
-                  ></i>
-                  Contact Support
-                </a>
-              </li>
+              <li><a routerLink="/features/image-parser" class="hover:text-indigo-400 transition-colors">Image Parser</a></li>
+              <li><a routerLink="/features/stt" class="hover:text-indigo-400 transition-colors">Speech to Text</a></li>
+              <li><a routerLink="/features/tts" class="hover:text-indigo-400 transition-colors">Text to Speech</a></li>
+              <li><a routerLink="/subscription" class="hover:text-indigo-400 transition-colors">Pricing</a></li>
             </ul>
           </div>
 
           <div>
-            <h4
-              class="text-surface-900 dark:text-surface-50 font-bold mb-6 tracking-wide text-sm uppercase"
-            >
-              Connect
-            </h4>
-            <p class="text-sm mb-4 text-surface-500 dark:text-surface-500">
-              Developed by ITI Students - Class 2025
-            </p>
+            <h4 class="text-white font-bold mb-6 tracking-wide uppercase text-xs">Company</h4>
+            <ul class="space-y-3 text-sm">
+              <li><a routerLink="/about" class="hover:text-indigo-400 transition-colors">About Us</a></li>
+              <li><a routerLink="/contact" class="hover:text-indigo-400 transition-colors">Contact</a></li>
+              <li><a href="#" class="hover:text-indigo-400 transition-colors">Privacy Policy</a></li>
+              <li><a href="#" class="hover:text-indigo-400 transition-colors">Terms of Service</a></li>
+            </ul>
+          </div>
 
-            <div class="flex gap-3">
-              <a
-                href="#"
-                class="w-10 h-10 rounded-full bg-surface-100 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 text-surface-700 dark:text-surface-300 flex items-center justify-center hover:bg-indigo-600 hover:text-white hover:border-indigo-600 dark:hover:bg-indigo-600 dark:hover:border-indigo-600 transition-all duration-300"
-                aria-label="GitHub"
-              >
-                <i class="pi pi-github text-lg"></i>
-              </a>
-              <a
-                href="#"
-                class="w-10 h-10 rounded-full bg-surface-100 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 text-surface-700 dark:text-surface-300 flex items-center justify-center hover:bg-blue-600 hover:text-white hover:border-blue-600 dark:hover:bg-blue-600 dark:hover:border-blue-600 transition-all duration-300"
-                aria-label="LinkedIn"
-              >
-                <i class="pi pi-linkedin text-lg"></i>
-              </a>
-              <a
-                href="#"
-                class="w-10 h-10 rounded-full bg-surface-100 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 text-surface-700 dark:text-surface-300 flex items-center justify-center hover:bg-sky-500 hover:text-white hover:border-sky-500 dark:hover:bg-sky-500 dark:hover:border-sky-500 transition-all duration-300"
-                aria-label="Twitter"
-              >
-                <i class="pi pi-twitter text-lg"></i>
-              </a>
+          <div>
+            <h4 class="text-white font-bold mb-6 tracking-wide uppercase text-xs">Stay Updated</h4>
+            <p class="text-slate-500 text-xs mb-4">Subscribe to our newsletter for the latest AI updates.</p>
+            
+            <div class="flex flex-col gap-3">
+               <p-inputGroup>
+                    <input pInputText placeholder="Email address" class="p-inputtext-sm bg-slate-900 border-slate-800 text-white placeholder-slate-600 focus:border-indigo-500" />
+                    <button type="button" pButton icon="pi pi-send" class="bg-indigo-600 border-indigo-600"></button>
+                </p-inputGroup>
             </div>
           </div>
-        </div>
 
-        <div
-          class="border-t border-surface-200 dark:border-surface-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-surface-500 dark:text-surface-500"
-        >
-          <p class="text-surface-600 dark:text-surface-400">
-            © 2025 AI Solutions Project. All rights reserved.
-          </p>
-          <div class="flex gap-6 mt-4 md:mt-0">
-            <a
-              href="#"
-              class="text-surface-600 dark:text-surface-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-            >
-              Privacy Policy
-            </a>
-            <a
-              href="#"
-              class="text-surface-600 dark:text-surface-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-            >
-              Terms of Service
-            </a>
+        </div>
+        
+        <div class="border-t border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-600">
+          <p>© 2025 AI Solutions - ITI Graduation Project.</p>
+          <div class="flex gap-2 mt-4 md:mt-0 items-center font-medium">
+             <span>Built with passion in Egypt 🇪🇬</span>
           </div>
         </div>
       </div>
     </footer>
   `,
-  styles: [
-    `
-      :host {
-        display: block;
-        margin-top: auto;
-      }
-    `,
-  ],
+  styles: [`
+    :host { display: block; margin-top: auto; }
+  `]
 })
-export class FooterComponent {}
+export class FooterComponent { } 
