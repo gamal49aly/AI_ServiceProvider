@@ -15,9 +15,9 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class HomeComponent implements OnInit {
   subscriptionService = inject(SubscriptionService);
-  authService = inject(AuthService); // Inject Auth
+  authService = inject(AuthService);
   router = inject(Router);
-  viewportScroller = inject(ViewportScroller); // Inject Scroller
+  viewportScroller = inject(ViewportScroller);
 
   plans: SubscriptionPlan[] = [];
   loadingPlans = false;
@@ -40,19 +40,34 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // Logic for "Get Started" button
+  // "Get Started" Button Logic
   handleGetStarted() {
     if (this.authService.currentUser()) {
-      // if logged in, scroll to services
-      this.viewportScroller.scrollToAnchor('services-section');
+      // User logged in: Smooth scroll to services
+      const servicesSection = document.getElementById('services-section');
+      if (servicesSection) {
+        servicesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     } else {
-      // if not logged in, navigate to register
-      this.router.navigate(['/pages/register']);
+      // User NOT logged in: Go to register
+      this.router.navigate(['/pages/register']).then(() => {
+        window.scrollTo(0, 0);
+      });
     }
   }
 
-  // Logic for "Learn More" button
+  // "How it Works" Button Logic
   scrollToHowItWorks() {
-    this.viewportScroller.scrollToAnchor('how-it-works');
+    const section = document.getElementById('how-it-works');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // Service Navigation Logic
+  navigateToService(path: string) {
+    this.router.navigate([path]).then(() => {
+      window.scrollTo(0, 0);
+    });
   }
 }
