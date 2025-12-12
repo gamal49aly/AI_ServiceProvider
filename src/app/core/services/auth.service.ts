@@ -2,11 +2,13 @@ import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap, Observable } from 'rxjs';
+import {  GoogleLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
+
 
 export interface User {
-  id: string;  // Changed from userId to match .NET Guid
+  id: string;
   email: string;
-  displayName: string;  // Changed from 'name' to match .NET
+  displayName: string; 
   token: string;
 }
 
@@ -17,6 +19,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
 
+
   // State Management using Signals
   currentUser = signal<User | null>(this.getUserFromStorage());
 
@@ -25,10 +28,9 @@ export class AuthService {
 
   constructor() { }
 
-  // LOGIN --------------
-
-
   
+
+  // LOGIN --------------
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/login`, credentials).pipe(
       tap(response => {

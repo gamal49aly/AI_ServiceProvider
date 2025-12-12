@@ -12,6 +12,7 @@ import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 
+
 const MyPreset = definePreset(Aura, {
   semantic: {
     primary: {
@@ -46,5 +47,20 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
+    // {
+    //   provide: 'SocialAuthServiceConfig',
+    //   useValue: {
+    //     autoLogin: false,
+    //     providers: [
+    //       {
+    //         id: GoogleLoginProvider.PROVIDER_ID,
+    //         provider: new GoogleLoginProvider('YOUR_GOOGLE_CLIENT_ID_HERE') // Replace with your actual Client ID
+    //       }
+    //     ],
+    //     onError: (err) => {
+    //       console.error('Social auth error:', err);
+    //     }
+    //   } as SocialAuthServiceConfig,
+    // }
   ],
 };
