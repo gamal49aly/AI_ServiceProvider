@@ -65,9 +65,10 @@ export class HomeComponent implements OnInit {
   }
 
   // Service Navigation Logic
-  navigateToService(path: string) {
-    this.router.navigate([path]).then(() => {
-      window.scrollTo(0, 0);
-    });
+
+  navigateToService(route: string): void {
+    this.router.navigate([route]);
+    window.scrollTo(0, 0);
+
   }
 }
