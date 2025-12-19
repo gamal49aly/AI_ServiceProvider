@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChatMessageData } from '../../models/chat-message-data.model';
+import { ChatMessage } from '../../models/chat-message-data.model';
 
 @Component({
   selector: 'app-chat-message',
@@ -10,7 +10,7 @@ import { ChatMessageData } from '../../models/chat-message-data.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatMessageComponent {
-  message = input.required<ChatMessageData>();
+  message = input.required<ChatMessage>();
 
   isUserMessage = () => this.message().sender === 'user';
   isBotMessage = () => this.message().sender === 'bot';
