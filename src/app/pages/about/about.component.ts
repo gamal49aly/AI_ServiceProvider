@@ -49,7 +49,7 @@ import { AvatarModule } from 'primeng/avatar';
             Since 2025
           </div>
           <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6">
-            We Are <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">AI Solutions</span>
+            We Are <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Parse.io</span>
           </h1>
           <p class="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
             A passionate team of ITI graduates bridging the gap between raw data and actionable insights through advanced Artificial Intelligence.
