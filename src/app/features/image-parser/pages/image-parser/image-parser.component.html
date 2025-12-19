@@ -1,122 +1,225 @@
 <p-toast></p-toast>
 
-<div class="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4 transition-colors duration-300">
+<div
+  class="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4 transition-colors duration-300"
+>
   <div class="container mx-auto max-w-6xl">
-
     <div class="text-center mb-12 animate-fade-in-down">
-      <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl mb-4"
+      >
         <i class="pi pi-image text-3xl text-blue-600 dark:text-blue-400"></i>
       </div>
-      <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">Image Parser</h1>
+      <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">
+        Image Parser
+      </h1>
       <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-        Upload any document or image to extract text.
+        Upload any document or image to extract structured data using AI.
       </p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
       <div class="space-y-6">
-        <p-card styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800">
+        <p-card
+          styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800"
+        >
           <ng-template pTemplate="title">
-            <span class="text-xl font-bold text-slate-800 dark:text-white">Upload Image</span>
+            <span class="text-xl font-bold text-slate-800 dark:text-white"
+              >Upload Image</span
+            >
           </ng-template>
 
           <div class="mb-6">
-            <p-fileUpload #fileInput mode="advanced" [customUpload]="true" (onSelect)="onFileSelect($event)"
-              [showUploadButton]="false" [showCancelButton]="false" chooseLabel="Browse File" accept="image/*"
-              maxFileSize="5000000" styleClass="w-full">
+            <p-fileUpload
+              #fileInput
+              mode="advanced"
+              [customUpload]="true"
+              [auto]="false"
+              (onSelect)="onFileSelect($event)"
+              [showUploadButton]="false"
+              [showCancelButton]="false"
+              chooseLabel="Browse File"
+              accept="image/*"
+              maxFileSize="5000000"
+              styleClass="w-full "
+            >
               <ng-template pTemplate="content">
-                <div *ngIf="!imagePreview" class="text-center py-8 text-slate-400 dark:text-slate-500 cursor-pointer"
-                  (click)="fileInput.choose()">
+                @if (!imagePreview()) {
+                <div
+                  class="text-center py-8 text-slate-400 dark:text-slate-500 cursor-pointer border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl hover:border-blue-400 transition-colors"
+                  (click)="fileInput.choose()"
+                >
                   <i class="pi pi-cloud-upload text-5xl mb-3"></i>
                   <p>Drag & Drop Image Here</p>
+                  <p class="text-xs mt-2">Maximum size: 5MB</p>
                 </div>
+                }
               </ng-template>
             </p-fileUpload>
           </div>
 
-          <div *ngIf="imagePreview"
-            class="mb-6 relative group rounded-xl overflow-hidden border-2 border-dashed border-blue-200 dark:border-blue-800">
-            <img [src]="imagePreview" class="w-full h-64 object-contain bg-slate-50 dark:bg-slate-900" />
+          @if (imagePreview()) {
+          <div
+            class="mb-6 relative group rounded-xl overflow-hidden border-2 border-dashed border-blue-200 dark:border-blue-800"
+          >
+            <img
+              [src]="imagePreview()"
+              class="w-full h-64 object-contain bg-slate-50 dark:bg-slate-900"
+            />
             <div
-              class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <button pButton icon="pi pi-times" class="p-button-rounded p-button-danger" (click)="clear()"></button>
+              class="absolute top-2 right-2 bg-black/50 flex items-center opacity-50 group-hover:opacity-100 transition-opacity rounded-full"
+            >
+              <button
+                pButton
+                icon="pi pi-times"
+                class="p-button-rounded p-button-danger p-button-sm"
+                (click)="clear()"
+              ></button>
             </div>
           </div>
+          }
 
           <div class="mb-6">
             <div class="flex justify-between items-center mb-3">
-              <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <label
+                class="block text-sm font-semibold text-slate-700 dark:text-slate-300"
+              >
                 Extraction Keys (JSON)
               </label>
-              <span *ngIf="extractionKeys.length > 1 || extractionKeys[0] !== ''"
-                class="text-xs text-red-500 cursor-pointer hover:underline" (click)="clearAllKeys()">
+              @if (extractionKeys().length > 1 || extractionKeys()[0] !== '') {
+              <span
+                class="text-xs text-red-500 cursor-pointer hover:underline"
+                (click)="clearAllKeys()"
+              >
                 Clear All
               </span>
+              }
             </div>
 
-            <div class="space-y-3 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
+            <div
+              class="space-y-3 max-h-60 overflow-y-auto pr-1 custom-scrollbar"
+            >
+              @for (key of extractionKeys(); track $index; let i = $index; let
+              isLast = $last) {
+              <div class="flex items-center gap-2 animate-fade-in-down">
+                <input
+                  type="text"
+                  [ngModel]="key"
+                  (ngModelChange)="onKeyInput(i, $event)"
+                  [placeholder]="
+                    isLast ? 'Add new key (e.g. Price)...' : 'Key Name'
+                  "
+                  class="flex-1 p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none placeholder-slate-400"
+                />
 
-              <div *ngFor="let key of extractionKeys; let i = index; let isLast = last; trackBy: trackByIndex"
-                class="flex items-center gap-2 animate-fade-in-down">
-
-                <input type="text" [(ngModel)]="extractionKeys[i]" (input)="onKeyInput(i, extractionKeys[i])"
-                  [placeholder]="isLast ? 'Add new key (e.g. Price)...' : 'Key Name'"
-                  class="flex-1 p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none placeholder-slate-400" />
-
-                <button *ngIf="!isLast || extractionKeys[i] !== ''" pButton icon="pi pi-times"
+                @if (!isLast || key !== '') {
+                <button
+                  pButton
+                  icon="pi pi-times"
                   class="p-button-rounded p-button-text p-button-secondary p-button-sm text-slate-400 hover:text-red-500"
-                  (click)="removeKey(i)">
-                </button>
+                  (click)="removeKey(i)"
+                ></button>
+                }
               </div>
-
+              }
             </div>
-            <small class="text-slate-400 dark:text-slate-500 text-xs mt-2 block">
-              Examples: Receipt ID, Total Amount, Date. Leave empty to extract everything.
+            <small
+              class="text-slate-600 dark:text-slate-300 text-xs mt-2 block"
+            >
+              Examples: Receipt ID, Total Amount, Date. Leave empty to extract
+              everything.
             </small>
           </div>
 
-          <button pButton label="Extract Text" icon="pi pi-bolt" class="w-full p-button-lg text-white"
-            [loading]="isLoading" [disabled]="!uploadedFile" (click)="processImage()">
-          </button>
+          <button
+            pButton
+            label="Extract Data"
+            icon="pi pi-bolt"
+            class="w-full p-button-lg text-white mt-auto"
+            [loading]="isLoading()"
+            [disabled]="!uploadedFile()"
+            (click)="processImage()"
+          ></button>
         </p-card>
       </div>
 
       <div class="relative">
-        <p-card styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800 bg-slate-900 text-white">
+        <p-card
+          styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800 bg-slate-900 text-white"
+        >
           <ng-template pTemplate="title">
-            <div class="flex items-center justify-between text-white">
-              <span>Extracted Data</span>
-              <i class="pi pi-code text-blue-400"></i>
+            <div
+              class="flex items-center justify-between text-white border-b border-slate-800 pb-2 mb-4"
+            >
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-code text-blue-400"></i>
+                  <span>Extracted Data</span>
+                </div>
+                @if (parsedResult()?.inputId) {
+                <span class="text-[10px] text-slate-500 font-mono"
+                  >ID: {{ parsedResult()?.inputId }}</span
+                >
+                }
+              </div>
+              @if (parsedResult()) {
+              <button
+                pButton
+                icon="pi pi-copy"
+                class="p-button-text p-button-sm text-slate-400 hover:text-white"
+                pTooltip="Copy JSON"
+                tooltipPosition="left"
+                (click)="copyToClipboard()"
+              ></button>
+              }
             </div>
           </ng-template>
 
           <div
-            class="h-[500px] overflow-auto rounded-lg bg-slate-950 p-4 font-mono text-sm relative border border-slate-800">
-            <div *ngIf="!parsedResult && !isLoading"
-              class="absolute inset-0 flex flex-col items-center justify-center text-slate-600">
-              <i class="pi pi-box text-4xl mb-3"></i>
-              <p>Result will appear here</p>
+            class="h-[500px] overflow-auto rounded-lg bg-slate-950 p-4 font-mono text-sm relative border border-slate-800"
+          >
+            @if (!parsedResult() && !isLoading()) {
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center text-slate-600"
+            >
+              <i class="pi pi-box text-5xl mb-3 opacity-20"></i>
+              <p>Results will appear here</p>
             </div>
-
-            <div *ngIf="isLoading"
-              class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/80 z-10">
-              <p-progressSpinner styleClass="w-12 h-12" strokeWidth="4"></p-progressSpinner>
-              <p class="mt-4 text-blue-400 animate-pulse">Analyzing pixels...</p>
+            } @if (isLoading()) {
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/80 z-10 backdrop-blur-sm"
+            >
+              <p-progressSpinner
+                styleClass="w-12 h-12"
+                strokeWidth="4"
+              ></p-progressSpinner>
+              <p class="mt-4 text-blue-400 font-medium animate-pulse">
+                AI is analyzing image...
+              </p>
             </div>
-
-            <pre *ngIf="parsedResult" class="text-green-400 whitespace-pre-wrap">{{ parsedResult }}</pre>
+            } @if (parsedResult()?.parsedData) {
+            <pre
+              class="text-green-400 whitespace-pre-wrap selection:bg-blue-500/30"
+              >{{ parsedResult()?.parsedData }}</pre
+            >
+            }
           </div>
 
-          <ng-template pTemplate="footer" *ngIf="parsedResult">
+          @if (parsedResult()) {
+          <ng-template pTemplate="footer">
             <div class="flex gap-2">
-              <button pButton label="Copy JSON" icon="pi pi-copy"
-                class="p-button-outlined p-button-secondary text-white w-full"></button>
+              <button
+                pButton
+                label="Copy JSON"
+                icon="pi pi-copy"
+                class="p-button-outlined p-button-secondary text-white w-full"
+                (click)="copyToClipboard()"
+              ></button>
             </div>
           </ng-template>
+          }
         </p-card>
       </div>
-
     </div>
   </div>
 </div>
