@@ -53,7 +53,7 @@ import { Menu } from 'primeng/menu';
                   <span
                     class="text-xl font-bold tracking-tight text-surface-800 dark:text-surface-100 group-hover:text-primary-700 dark:group-hover:text-primary-400 transition-colors"
                   >
-                    AI Solutions
+                    Parse.io
                   </span>
                 </div>
               </a>

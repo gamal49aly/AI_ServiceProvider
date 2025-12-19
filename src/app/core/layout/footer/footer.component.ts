@@ -23,7 +23,7 @@ import { InputTextModule } from 'primeng/inputtext';
               <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-900/20 group-hover:scale-110 transition-transform">
                 <i class="pi pi-bolt text-xl"></i>
               </div>
-              <span class="text-2xl font-bold text-white tracking-tight">AI Solutions</span>
+              <span class="text-2xl font-bold text-white tracking-tight">Parse.io</span>
             </a>
             <p class="text-slate-400 leading-relaxed text-sm mb-6">
               Transforming businesses with intelligent AI services. Secure, scalable, and easy to integrate.
@@ -70,7 +70,7 @@ import { InputTextModule } from 'primeng/inputtext';
         </div>
         
         <div class="border-t border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-600">
-          <p>© 2025 AI Solutions - ITI Graduation Project.</p>
+          <p>© 2025 Parse.io - ITI Graduation Project.</p>
           <div class="flex gap-2 mt-4 md:mt-0 items-center font-medium">
              <span>Built with passion in Egypt 🇪🇬</span>
           </div>
