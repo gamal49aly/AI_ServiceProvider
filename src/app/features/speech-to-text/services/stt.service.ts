@@ -1,25 +1,32 @@
-import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { ISpeechToTextResponse } from '../models/stt.model';
+import { ChatService } from '../../../core/services/chat.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SttService {
+  private readonly http = inject(HttpClient);
+  private readonly chatService = inject(ChatService);
+  private readonly apiUrl = 'https://localhost:7049/api';
 
-  constructor() { }
+  createSession(): Observable<any> {
+    return this.chatService.createSession('STT');
+  }
 
-  /**
-    * Simulate Speech-to-Text Conversion
-    *  In the future, this will call the backend API to process the audio file
-   */
-  convertSpeechToText(file: File): Observable<any> {
-    // Mock Response
-    const mockText = "This is a simulated result from the AI model. The speech-to-text process was successful, and this text represents the content of your audio file. In the future, this will be replaced by the actual backend response.";
-    
-    return of({ 
-      text: mockText,
-      confidence: 0.98,
-      duration: '00:45'
-    }).pipe(delay(3000)); // Simulate 3 seconds delay
+  convertSpeechToText(
+    chatId: string,
+    audioFile: File
+  ): Observable<ISpeechToTextResponse> {
+    const formData = new FormData();
+    formData.append('ChatId', chatId);
+    formData.append('AudioFile', audioFile);
+
+    return this.http.post<ISpeechToTextResponse>(
+      `${this.apiUrl}/SpeechToText/transcribe`,
+      formData
+    );
   }
 }

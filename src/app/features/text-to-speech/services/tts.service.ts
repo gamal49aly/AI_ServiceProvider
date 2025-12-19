@@ -1,22 +1,31 @@
-import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { TtsRequest } from '../models/tts.model';
+import { ChatService } from '../../../core/services/chat.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TtsService {
+  private readonly http = inject(HttpClient);
+  private readonly chatService = inject(ChatService);
+  private readonly apiUrl = 'https://localhost:7049/api';
 
-  constructor() { }
+  createSession(): Observable<any> {
+    return this.chatService.createSession('TTS');
+  }
 
   /**
-   * Simulate Text-to-Speech Conversion
-   * In the future, this will call the backend API to process the text input
+   * Returns a Blobs which can be converted to a URL for playback.
    */
-  convertTextToSpeech(text: string, voice: string): Observable<any> {
-    return of({ 
-      success: true,
-      audioUrl: 'assets/demo-audio.mp3', // demo audio file 
-      duration: '00:15'
-    }).pipe(delay(2000)); // Simulate 2 seconds delay
+  convertTextToSpeech(request: TtsRequest): Observable<Blob> {
+    return this.http.post(`${this.apiUrl}/TextToSpeech/synthesize`, request, {
+      responseType: 'blob',
+    });
+  }
+
+  getVoices(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/TextToSpeech/voices`);
   }
 }

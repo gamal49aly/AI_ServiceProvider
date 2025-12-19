@@ -1,103 +1,168 @@
 <p-toast></p-toast>
 
-<div class="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4 transition-colors duration-300">
-    <div class="container mx-auto max-w-5xl">
-
-        <div class="text-center mb-12 animate-fade-in-down">
-            <div
-                class="inline-flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-2xl mb-4">
-                <i class="pi pi-microphone text-3xl text-purple-600 dark:text-purple-400"></i>
-            </div>
-            <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">Speech to Text</h1>
-            <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                Transcribe your audio recordings into accurate text.
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-            <div class="space-y-6">
-                <p-card styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800">
-                    <ng-template pTemplate="title">
-                        <span class="text-xl font-bold text-slate-800 dark:text-white">Upload Audio</span>
-                    </ng-template>
-
-                    <div class="mb-6">
-                        <p-fileUpload #fileInput mode="advanced" [customUpload]="true" (onSelect)="onFileSelect($event)"
-                            [showUploadButton]="false" [showCancelButton]="false" chooseLabel="Select Audio"
-                            accept="audio/*" maxFileSize="10000000" styleClass="w-full">
-                            <ng-template pTemplate="content">
-                                <div *ngIf="!audioUrl"
-                                    class="text-center py-10 text-slate-400 dark:text-slate-500 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-700"
-                                    (click)="fileInput.choose()">
-                                    <i class="pi pi-volume-up text-5xl mb-3 text-purple-300 dark:text-purple-700"></i>
-                                    <p>Drag & Drop MP3 or WAV here</p>
-                                </div>
-                            </ng-template>
-                        </p-fileUpload>
-                    </div>
-
-                    <div *ngIf="audioUrl"
-                        class="mb-6 bg-purple-50 dark:bg-purple-900/20 p-4 rounded-xl flex items-center gap-4 animate-fade-in-down">
-                        <div
-                            class="w-10 h-10 bg-purple-200 dark:bg-purple-800 rounded-full flex items-center justify-center text-purple-700 dark:text-purple-300">
-                            <i class="pi pi-play"></i>
-                        </div>
-                        <audio [src]="audioUrl" controls class="w-full h-8"></audio>
-                        <button pButton icon="pi pi-times"
-                            class="p-button-rounded p-button-text p-button-danger p-button-sm"
-                            (click)="clear()"></button>
-                    </div>
-
-                    <button pButton label="Convert to Text" icon="pi pi-bolt"
-                        class="w-full p-button-lg bg-purple-600 border-purple-600 hover:bg-purple-700 text-white"
-                        [loading]="isLoading" [disabled]="!uploadedFile" (click)="processAudio()">
-                    </button>
-                </p-card>
-            </div>
-
-            <div class="relative">
-                <p-card
-                    styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <ng-template pTemplate="title">
-                        <div class="flex items-center justify-between">
-                            <span class="text-slate-800 dark:text-white">Transcription</span>
-                            <i class="pi pi-align-left text-purple-500"></i>
-                        </div>
-                    </ng-template>
-
-                    <div
-                        class="h-[400px] overflow-auto rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 relative">
-                        <div *ngIf="!convertedText && !isLoading"
-                            class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 dark:text-slate-600">
-                            <i class="pi pi-comment text-4xl mb-3 opacity-50"></i>
-                            <p>Transcription will appear here</p>
-                        </div>
-
-                        <div *ngIf="isLoading"
-                            class="absolute inset-0 flex flex-col items-center justify-center bg-white/80 dark:bg-slate-900/80 z-10">
-                            <div class="w-full max-w-[200px]">
-                                <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"
-                                    color="#9333ea"></p-progressBar>
-                            </div>
-                            <p class="mt-4 text-purple-600 font-medium animate-pulse">Processing audio...</p>
-                        </div>
-
-                        <div *ngIf="convertedText"
-                            class="prose max-w-none text-slate-700 dark:text-slate-300 leading-relaxed animate-fade-in-down">
-                            {{ convertedText }}
-                        </div>
-                    </div>
-
-                    <ng-template pTemplate="footer" *ngIf="convertedText">
-                        <div class="flex gap-2 justify-end">
-                            <button pButton label="Copy Text" icon="pi pi-copy"
-                                class="p-button-text text-purple-600 dark:text-purple-400"></button>
-                        </div>
-                    </ng-template>
-                </p-card>
-            </div>
-
-        </div>
+<div
+  class="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4 transition-colors duration-300"
+>
+  <div class="container mx-auto max-w-5xl">
+    <div class="text-center mb-12 animate-fade-in-down">
+      <div
+        class="inline-flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-2xl mb-4"
+      >
+        <i
+          class="pi pi-microphone text-3xl text-purple-600 dark:text-purple-400"
+        ></i>
+      </div>
+      <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">
+        Speech to Text
+      </h1>
+      <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+        Transcribe your audio recordings into accurate text.
+      </p>
     </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="space-y-6">
+        <p-card
+          styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800"
+        >
+          <ng-template pTemplate="title">
+            <span class="text-xl font-bold text-slate-800 dark:text-white"
+              >Upload Audio</span
+            >
+          </ng-template>
+
+          <div class="mb-6">
+            <p-fileUpload
+              #fileInput
+              mode="advanced"
+              [customUpload]="true"
+              (onSelect)="onFileSelect($event)"
+              [showUploadButton]="false"
+              [showCancelButton]="false"
+              chooseLabel="Select Audio"
+              accept="audio/*"
+              maxFileSize="10000000"
+              styleClass="w-full"
+            >
+              <ng-template pTemplate="content">
+                @if (!audioUrl()) {
+                <div
+                  class="text-center py-10 text-slate-400 dark:text-slate-500 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-700"
+                  (click)="fileInput.choose()"
+                >
+                  <i
+                    class="pi pi-volume-up text-5xl mb-3 text-purple-300 dark:text-purple-700"
+                  ></i>
+                  <p>Drag & Drop MP3 or WAV here</p>
+                  <p class="text-xs mt-2">Maximum size: 10MB</p>
+                </div>
+                }
+              </ng-template>
+            </p-fileUpload>
+          </div>
+
+          @if (audioUrl()) {
+          <div
+            class="mb-6 bg-purple-50 dark:bg-purple-900/20 p-4 rounded-xl flex items-center gap-4 animate-fade-in-down"
+          >
+            <div
+              class="w-10 h-10 bg-purple-200 dark:bg-purple-800 rounded-full flex items-center justify-center text-purple-700 dark:text-purple-300"
+            >
+              <i class="pi pi-play"></i>
+            </div>
+            <audio [src]="audioUrl()" controls class="w-full h-8"></audio>
+            <button
+              pButton
+              icon="pi pi-times"
+              class="p-button-rounded p-button-text p-button-danger p-button-sm"
+              (click)="clear()"
+            ></button>
+          </div>
+          }
+
+          <button
+            pButton
+            label="Convert to Text"
+            icon="pi pi-bolt"
+            class="w-full p-button-lg bg-purple-600 border-purple-600 hover:bg-purple-700 text-white"
+            [loading]="isLoading()"
+            [disabled]="!uploadedFile()"
+            (click)="processAudio()"
+          ></button>
+        </p-card>
+      </div>
+
+      <div class="relative">
+        <p-card
+          styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900"
+        >
+          <ng-template pTemplate="title">
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-slate-800 dark:text-white"
+                    >Transcription</span
+                  >
+                  <i class="pi pi-align-left text-purple-500"></i>
+                </div>
+                @if (convertedText()?.inputId) {
+                <span class="text-[10px] text-slate-500 font-mono"
+                  >ID: {{ convertedText()?.inputId }}</span
+                >
+                }
+              </div>
+            </div>
+          </ng-template>
+
+          <div
+            class="h-[400px] overflow-auto rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 relative"
+          >
+            @if (!convertedText() && !isLoading()) {
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 dark:text-slate-600"
+            >
+              <i class="pi pi-comment text-4xl mb-3 opacity-50"></i>
+              <p>Transcription will appear here</p>
+            </div>
+            } @if (isLoading()) {
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center bg-white/80 dark:bg-slate-900/80 z-10"
+            >
+              <div class="w-full max-w-[200px]">
+                <p-progressBar
+                  mode="indeterminate"
+                  [style]="{ height: '6px' }"
+                  color="#9333ea"
+                ></p-progressBar>
+              </div>
+              <p class="mt-4 text-purple-600 font-medium animate-pulse">
+                Processing audio...
+              </p>
+            </div>
+            } @if (convertedText()?.transcribedText) {
+            <div
+              class="prose max-w-none text-slate-700 dark:text-slate-300 leading-relaxed animate-fade-in-down"
+            >
+              {{ convertedText()?.transcribedText }}
+            </div>
+            }
+          </div>
+
+          @if (convertedText()) {
+          <ng-template pTemplate="footer">
+            <div class="flex gap-2 justify-end">
+              <button
+                pButton
+                label="Copy Text"
+                icon="pi pi-copy"
+                class="p-button-text text-purple-600 dark:text-purple-400"
+                (click)="copyToClipboard()"
+              ></button>
+            </div>
+          </ng-template>
+          }
+        </p-card>
+      </div>
+    </div>
+  </div>
 </div>

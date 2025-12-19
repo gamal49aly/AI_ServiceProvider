@@ -1,8 +1,15 @@
-import { Component, inject } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ImageParserService } from '../../services/image-parser.service';
 import { MessageService } from 'primeng/api';
+import { IParseImageResponse } from '../../models/image-parser.model';
 
 // PrimeNG Modules
 import { FileUploadModule } from 'primeng/fileupload';
@@ -23,111 +30,157 @@ import { TooltipModule } from 'primeng/tooltip';
     CardModule,
     ProgressSpinnerModule,
     ToastModule,
-    TooltipModule
+    TooltipModule,
   ],
   providers: [MessageService],
   templateUrl: './image-parser.component.html',
-  styleUrl: './image-parser.component.css'
+  styleUrl: './image-parser.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImageParserComponent {
-  service = inject(ImageParserService);
-  messageService = inject(MessageService);
+  private readonly service = inject(ImageParserService);
+  private readonly messageService = inject(MessageService);
 
-  uploadedFile: File | null = null;
-  imagePreview: string | null = null;
+  uploadedFile = signal<File | null>(null);
+  imagePreview = signal<string | null>(null);
+  extractionKeys = signal<string[]>(['']);
+  isLoading = signal(false);
+  parsedResult = signal<IParseImageResponse | null>(null);
 
-  extractionKeys: string[] = [''];
-
-  isLoading = false;
-  parsedResult: string | null = null;
+  validKeys = computed(() =>
+    this.extractionKeys()
+      .filter((k) => k.trim() !== '')
+      .join(',')
+  );
 
   onFileSelect(event: any) {
     const file = event.files[0];
     if (file) {
-      this.uploadedFile = file;
+      this.uploadedFile.set(file);
       const reader = new FileReader();
-      reader.onload = (e: any) => this.imagePreview = e.target.result;
+      reader.onload = (e: any) => this.imagePreview.set(e.target.result);
       reader.readAsDataURL(file);
     }
   }
+
   addKeyInput() {
-    this.extractionKeys.push('');
+    this.extractionKeys.update((keys) => [...keys, '']);
   }
+
   onKeyInput(index: number, value: string) {
-    if (index === this.extractionKeys.length - 1 && value.trim().length > 0) {
+    this.extractionKeys.update((keys) => {
+      const newKeys = [...keys];
+      newKeys[index] = value;
+      return newKeys;
+    });
+
+    if (index === this.extractionKeys().length - 1 && value.trim().length > 0) {
       this.addKeyInput();
     }
   }
 
-  trackByIndex(index: number, obj: any): any {
-    return index;
-  }
-
   removeKey(index: number) {
-    if (this.extractionKeys.length === 1) {
-      this.extractionKeys[0] = '';
+    if (this.extractionKeys().length === 1) {
+      this.extractionKeys.set(['']);
       return;
     }
-    this.extractionKeys.splice(index, 1);
+    this.extractionKeys.update((keys) => keys.filter((_, i) => i !== index));
   }
 
   clearAllKeys() {
-    this.extractionKeys = [''];
+    this.extractionKeys.set(['']);
   }
 
   processImage() {
-    if (!this.uploadedFile) return;
+    const file = this.uploadedFile();
+    if (!file) return;
 
-    this.isLoading = true;
-    this.parsedResult = null;
-
-    const validKeys = this.extractionKeys
-      .filter(k => k.trim() !== '')
-      .join(',');
+    this.isLoading.set(true);
+    this.parsedResult.set(null);
 
     this.service.createSession().subscribe({
-      next: (chat: any) => {
-        const chatId = chat.id;
+      next: (chat) => {
+        const chatId = chat?.id || chat?.ChatId;
+        if (!chatId) {
+          console.error('No Chat ID found in session response:', chat);
+          this.isLoading.set(false);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Session Error',
+            detail: 'Could not create a valid session.',
+          });
+          return;
+        }
 
-        this.service.parseImage(chatId, this.uploadedFile!, validKeys).subscribe({
+        this.service.parseImage(chatId, file, this.validKeys()).subscribe({
           next: (res) => {
-            this.isLoading = false;
-            this.parsedResult = res.parsedData;
-            this.messageService.add({ severity: 'success', summary: 'Done!', detail: 'Image analyzed successfully.' });
+            this.isLoading.set(false);
+            this.parsedResult.set(res);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Image analyzed successfully.',
+            });
           },
           error: (err) => {
+            console.error('API Error:', err);
             this.handleErrorWithMockData();
-          }
+          },
         });
       },
       error: (err) => {
+        console.error('Session Error:', err);
         this.handleErrorWithMockData();
-      }
+      },
     });
   }
 
   private handleErrorWithMockData() {
     console.warn('Backend issue, showing mock data...');
     setTimeout(() => {
-      this.isLoading = false;
-      this.parsedResult = JSON.stringify({
-        "status": "Mock Data",
-        "extracted_info": {
-          "items": [
-            { "item": "Laptop", "price": 25000 },
-            { "item": "Mouse", "price": 500 }
-          ]
-        }
-      }, null, 2);
+      this.isLoading.set(false);
+      this.parsedResult.set({
+        inputId: 'mock-id-' + Math.random().toString(36).substr(2, 9),
+        parsedData: JSON.stringify(
+          {
+            status: 'Mock Data',
+            extracted_info: {
+              items: [
+                { item: 'Laptop', price: 25000 },
+                { item: 'Mouse', price: 500 },
+              ],
+            },
+          },
+          null,
+          2
+        ),
+      });
 
-      this.messageService.add({ severity: 'warn', summary: 'Dev Mode', detail: 'Server error, showing mock data.' });
-    }, 2000);
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Dev Mode',
+        detail: 'Server error, showing mock data.',
+      });
+    }, 1500);
   }
 
   clear() {
-    this.uploadedFile = null;
-    this.imagePreview = null;
-    this.parsedResult = null;
-    this.extractionKeys = [''];
+    this.uploadedFile.set(null);
+    this.imagePreview.set(null);
+    this.parsedResult.set(null);
+    this.extractionKeys.set(['']);
+  }
+
+  copyToClipboard() {
+    const result = this.parsedResult()?.parsedData;
+    if (result) {
+      navigator.clipboard.writeText(result).then(() => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Copied',
+          detail: 'JSON result copied to clipboard.',
+        });
+      });
+    }
   }
 }
