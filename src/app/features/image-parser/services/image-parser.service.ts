@@ -2,21 +2,21 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IParseImageResponse } from '../models/image-parser.model';
+import { ChatService } from '../../../core/services/chat.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImageParserService {
   private readonly http = inject(HttpClient);
+  private readonly chatService = inject(ChatService);
   private readonly apiUrl = 'https://localhost:7049/api';
 
   /**
    * 1. Create a generic chat session for the parser
    */
   createSession(): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/Chat`, {
-      name: `Parser Session ${new Date().toLocaleTimeString()}`,
-    });
+    return this.chatService.createSession('Parser');
   }
 
   /**

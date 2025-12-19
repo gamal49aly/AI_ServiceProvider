@@ -2,18 +2,18 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ISpeechToTextResponse } from '../models/stt.model';
+import { ChatService } from '../../../core/services/chat.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SttService {
   private readonly http = inject(HttpClient);
+  private readonly chatService = inject(ChatService);
   private readonly apiUrl = 'https://localhost:7049/api';
 
   createSession(): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/Chat`, {
-      name: `STT Session ${new Date().toLocaleTimeString()}`,
-    });
+    return this.chatService.createSession('STT');
   }
 
   convertSpeechToText(

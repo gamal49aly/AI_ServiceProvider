@@ -2,22 +2,21 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TtsRequest } from '../models/tts.model';
+import { ChatService } from '../../../core/services/chat.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TtsService {
   private readonly http = inject(HttpClient);
+  private readonly chatService = inject(ChatService);
   private readonly apiUrl = 'https://localhost:7049/api';
 
   createSession(): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/Chat`, {
-      name: `TTS Session ${new Date().toLocaleTimeString()}`,
-    });
+    return this.chatService.createSession('TTS');
   }
 
   /**
-   * Generates audio from text using the backend API.
    * Returns a Blobs which can be converted to a URL for playback.
    */
   convertTextToSpeech(request: TtsRequest): Observable<Blob> {
