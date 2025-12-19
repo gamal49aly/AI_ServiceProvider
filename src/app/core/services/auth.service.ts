@@ -19,7 +19,6 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-
   // State Management using Signals
   currentUser = signal<User | null>(this.getUserFromStorage());
 
@@ -28,7 +27,6 @@ export class AuthService {
 
   constructor() { }
 
-  
 
   // LOGIN --------------
   login(credentials: { email: string; password: string }): Observable<any> {
