@@ -180,7 +180,7 @@ export class TtsComponent implements OnInit, OnDestroy {
 
         const url = URL.createObjectURL(blob);
         this.audioUrl.set(url);
-        this.playAudioFromUrl(url);
+        //this.playAudioFromUrl(url);
 
         // Success message
         this.messageService.add({
