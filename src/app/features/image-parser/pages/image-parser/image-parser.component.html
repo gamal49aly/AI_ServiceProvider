@@ -1,39 +1,100 @@
 <p-toast></p-toast>
 
-<div class="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4 transition-colors duration-300">
+<div
+  class="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4 transition-colors duration-300"
+>
   <div class="container mx-auto max-w-6xl">
-    <!-- Header -->
-    <div class="text-center mb-12 animate-fade-in-down">
-      <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl mb-4">
-        <i class="pi pi-image text-3xl text-blue-600 dark:text-blue-400"></i>
+    <!-- Header Aligned -->
+    <div class="flex items-center justify-between mb-12 animate-fade-in-down">
+      <div class="flex items-center gap-4">
+        <div
+          class="inline-flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl"
+        >
+          <i class="pi pi-image text-2xl text-blue-600 dark:text-blue-400"></i>
+        </div>
+        <div>
+          <h1 class="text-3xl font-bold text-slate-900 dark:text-white">
+            Image Parser
+          </h1>
+          <p class="text-sm text-slate-500 dark:text-slate-400">
+            Extract structured data with AI precision
+          </p>
+        </div>
       </div>
-      <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">
-        Image Parser
-      </h1>
-      <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-        Upload any document or image to extract structured data using AI. Results displayed in a searchable table.
-      </p>
+
+      <div class="flex items-center gap-3">
+        <button
+          pButton
+          label="View History"
+          icon="pi pi-history"
+          outlined
+          class="p-button-secondary rounded-xl bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-blue-500 hover:text-blue-500 transition-all shadow-sm"
+          (click)="showHistoryDrawer.set(true)"
+        ></button>
+      </div>
     </div>
+
+    <!-- Active Session Banner-->
+    @if (selectedChatId()) {
+    <div
+      class="mb-8 p-4 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-2xl flex items-center justify-between animate-fade-in"
+    >
+      <div class="flex items-center gap-3">
+        <div
+          class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+        ></div>
+        <span class="text-sm font-medium text-blue-900 dark:text-blue-300">
+          Active Session:
+          <span class="font-bold opacity-100 ml-1">{{
+            activeChat()?.name || "Current Session"
+          }}</span>
+        </span>
+      </div>
+      <button
+        pButton
+        icon="pi pi-plus"
+        label="New Session"
+        size="small"
+        class="p-button-text text-blue-600 dark:text-blue-400 font-bold hover:bg-blue-100 dark:hover:bg-blue-900/30"
+        (click)="createNewSession()"
+      ></button>
+    </div>
+    }
 
     <!-- Main Content -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Left Column: Upload Section -->
       <div class="space-y-6">
-        <p-card styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800">
+        <p-card
+          styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800"
+        >
           <ng-template pTemplate="title">
-            <span class="text-xl font-bold text-slate-800 dark:text-white">Upload Image</span>
+            <span class="text-xl font-bold text-slate-800 dark:text-white"
+              >Upload Image</span
+            >
           </ng-template>
 
           <!-- File Upload -->
           <div class="mb-6">
-            <p-fileUpload #fileInput mode="advanced" [customUpload]="true" [auto]="false"
-              (onSelect)="onFileSelect($event)" [showUploadButton]="false" [showCancelButton]="false"
-              chooseLabel="Browse File" accept="image/*" maxFileSize="5000000" styleClass="w-full">
+            <p-fileUpload
+              #fileInput
+              mode="advanced"
+              [customUpload]="true"
+              [auto]="false"
+              (onSelect)="onFileSelect($event)"
+              [showUploadButton]="false"
+              [showCancelButton]="false"
+              chooseLabel="Browse File"
+              accept="image/*"
+              maxFileSize="5000000"
+              styleClass="w-full"
+            >
               <ng-template pTemplate="content">
                 @if (!imagePreview()) {
                 <div
                   class="text-center py-8 text-slate-400 dark:text-slate-500 cursor-pointer border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl hover:border-blue-400 transition-colors"
-                  (click)="fileInput.choose()">
+                  (click)="fileInput.choose()"
+                >
                   <i class="pi pi-cloud-upload text-5xl mb-3"></i>
                   <p>Drag & Drop Image Here</p>
                   <p class="text-xs mt-2">Maximum size: 5MB</p>
@@ -46,12 +107,22 @@
           <!-- Image Preview -->
           @if (imagePreview()) {
           <div
-            class="mb-6 relative group rounded-xl overflow-hidden border-2 border-dashed border-blue-200 dark:border-blue-800">
-            <img [src]="imagePreview()" class="w-full h-64 object-contain bg-slate-50 dark:bg-slate-900" />
+            class="mb-6 relative group rounded-xl overflow-hidden border-2 border-dashed border-blue-200 dark:border-blue-800"
+          >
+            <img
+              [src]="imagePreview()"
+              class="w-full h-64 object-contain bg-slate-50 dark:bg-slate-900"
+            />
             <div
-              class="absolute top-2 right-2 bg-black/50 flex items-center opacity-50 group-hover:opacity-100 transition-opacity rounded-full">
-              <button pButton icon="pi pi-times" class="p-button-rounded p-button-danger p-button-sm"
-                (click)="clear()"></button>
+              class="absolute top-2 right-2 bg-black/50 flex items-center opacity-50 group-hover:opacity-100 transition-opacity rounded-full"
+            >
+              <button
+                pButton
+                icon="pi pi-times"
+                size="small"
+                class="p-button-rounded p-button-danger"
+                (click)="clear()"
+              ></button>
             </div>
           </div>
           }
@@ -59,117 +130,184 @@
           <!-- Extraction Keys Input -->
           <div class="mb-6">
             <div class="flex justify-between items-center mb-3">
-              <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <label
+                class="block text-sm font-semibold text-slate-700 dark:text-slate-300"
+              >
                 Extraction Keys (JSON)
               </label>
               @if (extractionKeys().length > 1 || extractionKeys()[0] !== '') {
-              <span class="text-xs text-red-500 cursor-pointer hover:underline" (click)="clearAllKeys()">
+              <span
+                class="text-xs text-red-500 cursor-pointer hover:underline"
+                (click)="clearAllKeys()"
+              >
                 Clear All
               </span>
               }
             </div>
 
-            <div class="space-y-3 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
-              @for (key of extractionKeys(); track $index; let i = $index; let isLast = $last) {
+            <div
+              class="space-y-3 max-h-60 overflow-y-auto pr-1 custom-scrollbar"
+            >
+              @for (key of extractionKeys(); track $index; let i = $index; let
+              isLast = $last) {
               <div class="flex items-center gap-2 animate-fade-in-down">
-                <input type="text" [ngModel]="key" (ngModelChange)="onKeyInput(i, $event)"
-                  [placeholder]="isLast ? 'Add new key (e.g. Price)...' : 'Key Name'"
-                  class="flex-1 p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none placeholder-slate-400" />
+                <input
+                  type="text"
+                  [ngModel]="key"
+                  (ngModelChange)="onKeyInput(i, $event)"
+                  [placeholder]="
+                    isLast ? 'Add new key (e.g. Price)...' : 'Key Name'
+                  "
+                  class="flex-1 p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none placeholder-slate-400"
+                />
 
                 @if (!isLast || key !== '') {
-                <button pButton icon="pi pi-times"
-                  class="p-button-rounded p-button-text p-button-secondary p-button-sm text-slate-400 hover:text-red-500"
-                  (click)="removeKey(i)"></button>
+                <button
+                  pButton
+                  icon="pi pi-times"
+                  size="small"
+                  class="p-button-rounded p-button-text p-button-secondary text-slate-400 hover:text-red-500"
+                  (click)="removeKey(i)"
+                ></button>
                 }
               </div>
               }
             </div>
-            <small class="text-slate-600 dark:text-slate-300 text-xs mt-2 block">
-              Examples: Receipt ID, Total Amount, Date. Leave empty to extract everything.
+            <small
+              class="text-slate-600 dark:text-slate-300 text-xs mt-2 block"
+            >
+              Examples: Receipt ID, Total Amount, Date. Leave empty to extract
+              everything.
             </small>
           </div>
 
           <!-- Process Button -->
-          <button pButton label="Extract Data" icon="pi pi-bolt" class="w-full p-button-lg text-white mt-auto"
-            [loading]="isLoading()" [disabled]="!uploadedFile()" (click)="processImage()"></button>
+          <button
+            pButton
+            label="Extract Data"
+            icon="pi pi-bolt"
+            size="large"
+            class="w-full  text-white mt-auto"
+            [loading]="isLoading()"
+            [disabled]="!uploadedFile()"
+            (click)="processImage()"
+          ></button>
         </p-card>
       </div>
 
       <!-- Right Column: Results Section -->
       <div class="space-y-6">
         <!-- Raw JSON Data Card -->
-        <p-card styleClass="shadow-lg border border-slate-100 dark:border-slate-800">
+        <p-card
+          styleClass="shadow-lg border border-slate-100 dark:border-slate-800"
+        >
           <ng-template pTemplate="title">
             <div
-              class="flex items-center justify-between text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2 mb-4">
+              class="flex items-center justify-between text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2 mb-4"
+            >
               <div class="flex flex-col gap-1">
                 <div class="flex items-center gap-2">
                   <i class="pi pi-code text-blue-600 dark:text-blue-400"></i>
                   <span>Raw JSON Data</span>
                 </div>
                 @if (parsedResult()?.inputId) {
-                <span class="text-[10px] text-slate-500 font-mono">ID: {{ parsedResult()?.inputId }}</span>
+                <span class="text-[10px] text-slate-500 font-mono"
+                  >ID: {{ parsedResult()?.inputId }}</span
+                >
                 }
               </div>
               @if (parsedResult()) {
-              <button pButton icon="pi pi-copy"
-                class="p-button-text p-button-sm text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
-                pTooltip="Copy JSON" tooltipPosition="left" (click)="copyToClipboard()"></button>
+              <button
+                pButton
+                icon="pi pi-copy"
+                size="large"
+                class="p-button-text text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+                pTooltip="Copy JSON"
+                tooltipPosition="left"
+                (click)="copyToClipboard()"
+              ></button>
               }
             </div>
           </ng-template>
 
           <div
-            class="h-64 overflow-auto rounded-lg bg-slate-900 p-4 font-mono text-sm relative border border-slate-800">
+            class="h-64 overflow-auto rounded-lg bg-slate-900 p-4 font-mono text-sm relative border border-slate-800"
+          >
             @if (!parsedResult() && !isLoading()) {
-            <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-600">
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center text-slate-600"
+            >
               <i class="pi pi-box text-5xl mb-3 opacity-20"></i>
               <p>JSON data will appear here</p>
             </div>
-            }
-            @if (parsedResult()?.parsedData) {
+            } @if (parsedResult()?.parsedData) {
             <pre
-              class="text-green-400 whitespace-pre-wrap selection:bg-blue-500/30">{{ parsedResult()?.parsedData }}</pre>
+              class="text-green-400 whitespace-pre-wrap selection:bg-blue-500/30"
+              >{{ formattedJson() }}</pre
+            >
             }
           </div>
         </p-card>
 
         <!-- Table Data Card -->
-        <p-card styleClass="shadow-lg border border-slate-100 dark:border-slate-800">
+        <p-card
+          styleClass="shadow-lg border border-slate-100 dark:border-slate-800"
+        >
           <ng-template pTemplate="title">
             <div
-              class="flex items-center justify-between text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2 mb-4">
+              class="flex items-center justify-between text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2 mb-4"
+            >
               <div class="flex items-center gap-2">
                 <i class="pi pi-table text-blue-600 dark:text-blue-400"></i>
                 <span>Extracted Data Table</span>
                 @if (tableData().length > 0) {
                 <span
-                  class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-full">
+                  class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-full"
+                >
                   {{ tableData().length }} items
                 </span>
                 }
               </div>
               <div class="flex items-center gap-1">
                 @if (parsedResult()?.parsedData && tableData().length === 0) {
-                <button pButton icon="pi pi-refresh"
-                  class="p-button-text p-button-sm text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
-                  pTooltip="Convert JSON to table" tooltipPosition="left" (click)="manuallyConvertToTable()"></button>
-                }
-                @if (tableData().length > 0) {
-                <button pButton icon="pi pi-download"
-                  class="p-button-text p-button-sm text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
-                  pTooltip="Export to CSV" tooltipPosition="left" (click)="exportToCSV()"></button>
+                <button
+                  pButton
+                  icon="pi pi-refresh"
+                  size="small"
+                  class="p-button-text text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  pTooltip="Convert JSON to table"
+                  tooltipPosition="left"
+                  (click)="manuallyConvertToTable()"
+                ></button>
+                } @if (tableData().length > 0) {
+                <button
+                  pButton
+                  icon="pi pi-download"
+                  size="large"
+                  class="p-button-text text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  pTooltip="Export to CSV"
+                  tooltipPosition="left"
+                  (click)="exportToCSV()"
+                ></button>
                 }
               </div>
             </div>
           </ng-template>
 
-          <div class="rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
-            <!-- Loading State -->
+          <div
+            class="rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800"
+          >
             @if (isLoading()) {
-            <div class="h-64 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900">
-              <p-progressSpinner styleClass="w-12 h-12" strokeWidth="4"></p-progressSpinner>
-              <p class="mt-4 text-blue-600 dark:text-blue-400 font-medium animate-pulse">
+            <div
+              class="h-64 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900"
+            >
+              <p-progressSpinner
+                styleClass="w-12 h-12"
+                strokeWidth="4"
+              ></p-progressSpinner>
+              <p
+                class="mt-4 text-blue-600 dark:text-blue-400 font-medium animate-pulse"
+              >
                 Processing data...
               </p>
             </div>
@@ -177,100 +315,81 @@
 
             <!-- Empty State - No data yet -->
             @if (!parsedResult() && !isLoading()) {
-            <div class="h-64 flex flex-col items-center justify-center text-slate-600 bg-slate-50 dark:bg-slate-900">
+            <div
+              class="h-64 flex flex-col items-center justify-center text-slate-600 bg-slate-50 dark:bg-slate-900"
+            >
               <i class="pi pi-table text-5xl mb-3 opacity-20"></i>
               <p>Table data will appear here</p>
-              <p class="text-sm text-slate-500 mt-2">Upload and process an image first</p>
+              <p class="text-sm text-slate-500 mt-2">
+                Upload and process an image first
+              </p>
             </div>
             }
 
             <!-- Has parsed data but no table data -->
-            @if (parsedResult()?.parsedData && tableData().length === 0 && !isLoading()) {
+            @if (parsedResult()?.parsedData && tableData().length === 0 &&
+            !isLoading()) {
             <div
-              class="h-64 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400">
-              <i class="pi pi-exclamation-triangle text-5xl mb-4 text-yellow-500"></i>
-              <p class="text-lg font-medium mb-2">Data parsed but not in table format</p>
-              <p class="text-sm text-center max-w-md">
-                The data was extracted successfully but couldn't be automatically converted to table format.
+              class="h-64 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400"
+            >
+              <i
+                class="pi pi-exclamation-triangle text-5xl mb-4 text-yellow-500"
+              ></i>
+              <p class="text-lg font-medium mb-2">
+                Data parsed but not in table format
               </p>
-              <button pButton label="Try to convert" icon="pi pi-refresh" class="mt-4 p-button-outlined p-button-sm"
-                (click)="manuallyConvertToTable()">
-              </button>
+              <p class="text-sm text-center max-w-md">
+                The data was extracted successfully but couldn't be
+                automatically converted to table format.
+              </p>
+              <button
+                pButton
+                label="Try to convert"
+                icon="pi pi-refresh"
+                outlined
+                size="small"
+                (click)="manuallyConvertToTable()"
+              ></button>
             </div>
             }
 
             <!-- Table with Data -->
             @if (tableData().length > 0 && !isLoading()) {
             <div class="overflow-x-auto">
-              <p-table [value]="tableData()" styleClass="p-datatable-sm" [paginator]="true" [rows]="8"
-                [rowsPerPageOptions]="[5, 8, 15, 20]" [showCurrentPageReport]="true"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-
-                <!-- In the table header section of your HTML, update to: -->
+              <p-table
+                [value]="tableData()"
+                styleClass="p-datatable-sm"
+                [paginator]="true"
+                [rows]="8"
+                [rowsPerPageOptions]="[5, 8, 15, 20]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              >
+                <!-- Updated table header section -->
                 <ng-template pTemplate="header">
                   <tr class="bg-slate-100 dark:bg-slate-900">
+                    @for (col of dynamicColumns(); track col) {
                     <th
-                      class="text-left p-3 border-b border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300">
-                      Product</th>
-                    <th
-                      class="text-left p-3 border-b border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300">
-                      Price</th>
-                    <th
-                      class="text-left p-3 border-b border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300">
-                      Quantity</th>
-                    <th
-                      class="text-left p-3 border-b border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300">
-                      Total</th>
-                    <th
-                      class="text-left p-3 border-b border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300">
-                      Category</th>
+                      class="text-left p-3 border-b border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300"
+                    >
+                      {{ col | titlecase }}
+                    </th>
+                    }
                   </tr>
                 </ng-template>
 
-                <!-- And in the table body: -->
+                <!-- Updated table body -->
                 <ng-template pTemplate="body" let-item>
                   <tr
-                    class="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors border-b border-slate-200 dark:border-slate-800">
+                    class="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors border-b border-slate-200 dark:border-slate-800"
+                  >
+                    @for (col of dynamicColumns(); track col) {
                     <td class="p-3">
-                      <div class="font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                        <i class="pi pi-tag text-blue-500 text-sm"></i>
-                        {{ item.product }}
-                        @if (item.upc) {
-                        <span class="text-xs text-slate-500 font-mono">({{ item.upc }})</span>
-                        }
-                      </div>
-                    </td>
-                    <td class="p-3">
-                      <span class="font-semibold text-green-600 dark:text-green-400 flex items-center gap-1">
-                        <i class="pi pi-dollar text-sm"></i>
-                        {{ item.price.toFixed(2) }}
+                      <span class="text-slate-700 dark:text-slate-300">
+                        {{ item[col] }}
                       </span>
                     </td>
-                    <td class="p-3">
-                      <span
-                        class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full font-semibold">
-                        {{ item.quantity }}
-                      </span>
-                    </td>
-                    <td class="p-3">
-                      <span class="font-bold text-slate-900 dark:text-white">
-                        ${{ (item.total || (item.price * item.quantity)).toFixed(2) }}
-                      </span>
-                    </td>
-                    <td class="p-3">
-                      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium" [ngClass]="{
-              'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': item.category === 'Pet Supplies',
-              'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300': item.category === 'Toys',
-              'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': item.category === 'Food',
-              'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300': item.category === 'Produce',
-              'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300': item.category === 'Household',
-              'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300': item.category === 'Frozen Food',
-              'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300': item.category === 'Dairy',
-              'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300': !item.category || item.category === 'General Merchandise'
-            }">
-                        {{ item.category || 'General' }}
-                      </span>
-                    </td>
+                    }
                   </tr>
                 </ng-template>
 
@@ -295,13 +414,21 @@
           <!-- Table Footer -->
           @if (tableData().length > 0) {
           <ng-template pTemplate="footer">
-            <div class="flex justify-between items-center text-sm text-slate-500">
+            <div
+              class="flex justify-between items-center text-sm text-slate-500"
+            >
               <span class="flex items-center gap-2">
                 <i class="pi pi-info-circle text-blue-500"></i>
                 Showing {{ tableData().length }} extracted items
               </span>
-              <button pButton label="Export to CSV" icon="pi pi-download" class="p-button-outlined p-button-sm"
-                (click)="exportToCSV()"></button>
+              <button
+                pButton
+                label="Export to CSV"
+                icon="pi pi-download"
+                outlined
+                size="large"
+                (click)="exportToCSV()"
+              ></button>
             </div>
           </ng-template>
           }
@@ -312,9 +439,170 @@
     <!-- Clear All Button -->
     @if (parsedResult() || uploadedFile()) {
     <div class="mt-8 text-center">
-      <button pButton label="Clear All" icon="pi pi-trash" class="p-button-outlined p-button-danger"
-        (click)="clear()"></button>
+      <button
+        pButton
+        label="Clear All"
+        icon="pi pi-trash"
+
+        outlined
+        class="p-button-danger"
+        (click)="clear()"
+      ></button>
     </div>
     }
+
+    <!-- Parsed Images Feed -->
+    <div class="mt-16 space-y-8">
+      <div class="flex items-center gap-3">
+        <div class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></div>
+        <h2 class="text-xl font-bold text-slate-400 dark:text-slate-600">
+          Parsed Images Feed
+        </h2>
+        <div class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6">
+        @for (record of history(); track record.inputId) {
+        <div
+          class="group bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md hover:border-blue-200 dark:hover:border-blue-900/50 transition-all duration-300 cursor-pointer animate-fade-in"
+          (click)="viewHistoryRecord(record)"
+        >
+          <div class="flex flex-col md:flex-row gap-6">
+            <div
+              class="w-full md:w-48 h-32 bg-slate-50 dark:bg-slate-950 rounded-xl flex items-center justify-center border border-slate-100 dark:border-slate-800 group-hover:bg-blue-50 dark:group-hover:bg-blue-950/30 transition-colors overflow-hidden"
+            >
+              @if(record.imageUrl){
+              <img
+                [src]="record.imageUrl"
+                class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+              />
+              }@else{
+              <i
+                class="pi pi-image text-3xl text-slate-300 group-hover:text-blue-400"
+              ></i>
+              }
+            </div>
+            <div class="flex-1 space-y-3">
+              <div class="flex items-center justify-between">
+                <span
+                  class="text-[10px] font-mono tracking-wider text-slate-400 uppercase"
+                >
+                  Session: {{ activeChat()?.name || "Original" }}
+                </span>
+                <span class="text-xs text-slate-500">
+                  {{ record.uploadedAt | date : "medium" }}
+                </span>
+              </div>
+              <p
+                class="text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed"
+              >
+                {{ record.jsonSchema || record.parsedData || "Full Text Extraction" }}
+              </p>
+              <div class="flex items-center gap-4 pt-2">
+                <button
+                  pButton
+                  label="View Details"
+                  icon="pi pi-external-link"
+                  size="small"
+                  class="p-button-text text-blue-600 dark:text-blue-400 p-0"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        } @empty {
+        <div
+          class="text-center py-20 bg-slate-50/50 dark:bg-slate-900/20 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800"
+        >
+          <i
+            class="pi pi-image text-5xl text-slate-200 dark:text-slate-800 mb-4"
+          ></i>
+          <p class="text-slate-400 dark:text-slate-500">
+            No parsed images yet for this session.
+          </p>
+        </div>
+        }
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- History Drawer -->
+<p-drawer
+  [visible]="showHistoryDrawer()"
+  (visibleChange)="showHistoryDrawer.set($event)"
+  position="right"
+  styleClass="w-full md:w-[450px] border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center justify-between w-full pr-4">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center"
+        >
+          <i class="pi pi-history text-blue-600 dark:text-blue-400"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">
+          History
+        </h2>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="flex flex-col h-full">
+    <div class="p-6">
+      <button
+        pButton
+        label="Start New Session"
+        icon="pi pi-plus"
+        size="large"
+        class="w-full bg-blue-600 border-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-200 dark:shadow-none transition-all hover:-translate-y-0.5"
+        (click)="createNewSession(); showHistoryDrawer.set(false)"
+      ></button>
+    </div>
+
+    <p-divider styleClass="m-0"></p-divider>
+
+    <div class="flex-1 overflow-auto p-4 space-y-3">
+      @if (chats().length > 0) { @for (chat of chats(); track chat.id) {
+      <div
+        class="p-4 rounded-xl border transition-all cursor-pointer group relative"
+        [class.bg-blue-50]="selectedChatId() === chat.id"
+        [class.border-blue-200]="selectedChatId() === chat.id"
+        [class.dark:bg-blue-900/20]="selectedChatId() === chat.id"
+        [class.dark:border-blue-800]="selectedChatId() === chat.id"
+        [class.bg-white]="selectedChatId() !== chat.id"
+        [class.dark:bg-slate-900]="selectedChatId() !== chat.id"
+        [class.border-slate-100]="selectedChatId() !== chat.id"
+        [class.dark:border-slate-800]="selectedChatId() !== chat.id"
+        [class.hover:border-blue-300]="selectedChatId() !== chat.id"
+        (click)="selectChat(chat.id)"
+      >
+        <div class="flex items-center justify-between mb-2">
+          <span
+            class="text-sm font-bold truncate pr-8"
+            [class.text-blue-900]="selectedChatId() === chat.id"
+            [class.dark:text-blue-100]="selectedChatId() === chat.id"
+            [class.text-slate-700]="selectedChatId() !== chat.id"
+            [class.dark:text-slate-300]="selectedChatId() !== chat.id"
+          >
+            {{ chat.name }}
+          </span>
+          @if (selectedChatId() === chat.id) {
+          <p-badge severity="info" value="Active"></p-badge>
+          }
+        </div>
+        <div class="flex items-center text-[10px] text-slate-400 gap-2">
+          <i class="pi pi-calendar"></i>
+          {{ chat.createdAt | date : "medium" }}
+        </div>
+      </div>
+      } } @else {
+      <div class="text-center py-20 opacity-40">
+        <i class="pi pi-folder-open text-5xl mb-4"></i>
+        <p>No recent sessions</p>
+      </div>
+      }
+    </div>
+  </div>
+</p-drawer>

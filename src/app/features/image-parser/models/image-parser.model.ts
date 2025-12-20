@@ -1,14 +1,27 @@
-export interface ImageParserDTO {}
-
-export interface IParseImageRequest {
+export interface ParseImageRequestDto {
   chatId: string;
   image: File;
   jsonKeys: string;
 }
 
-export interface IParseImageResponse {
+export interface ParseImageResponseDto {
   inputId: string;
   parsedData: string;
+}
+
+export interface ImageParserChat {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
+export interface ImageParserHistoryRow {
+  inputId: string;
+  imageUrl: string;
+  jsonSchema?: string;
+  uploadedAt: string;
+  parsedData?: string;
+  generatedAt?: string;
 }
 
 /**

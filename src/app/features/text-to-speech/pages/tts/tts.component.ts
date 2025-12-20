@@ -4,16 +4,14 @@ import {
   OnInit,
   OnDestroy,
   signal,
+  computed,
   ChangeDetectionStrategy,
-  AfterViewInit,
-  ViewChild,
-  ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TtsService } from '../../services/tts.service';
 import { MessageService } from 'primeng/api';
-import { ITtsVoice } from '../../models/tts.model';
+import { ITtsVoice, TtsChat, TtsHistoryRow } from '../../models/tts.model';
 import { TTS_VOICES } from '../../constants/tts-voices.constants';
 
 // PrimeNG Modules
@@ -22,6 +20,9 @@ import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { SliderModule } from 'primeng/slider';
 import { TooltipModule } from 'primeng/tooltip';
+import { DrawerModule } from 'primeng/drawer';
+import { DividerModule } from 'primeng/divider';
+import { BadgeModule } from 'primeng/badge';
 
 @Component({
   selector: 'app-tts',
@@ -34,6 +35,9 @@ import { TooltipModule } from 'primeng/tooltip';
     ToastModule,
     SliderModule,
     TooltipModule,
+    DrawerModule,
+    DividerModule,
+    BadgeModule,
   ],
   providers: [MessageService],
   templateUrl: './tts.component.html',
@@ -42,47 +46,213 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class TtsComponent implements OnInit, OnDestroy {
   private readonly service = inject(TtsService);
-
   private readonly messageService = inject(MessageService);
 
+  // --- State & Signals ---
   audioUrl = signal<string | null>(null);
-  private audio: HTMLAudioElement | null = null;
-
-  // Demo audio handling
-  private demoAudio: HTMLAudioElement | null = null;
-  playingDemo = signal<string | null>(null);
-
   textToConvert = signal('');
   selectedVoice = signal('Achernar');
   isLoading = signal(false);
   isAudioReady = signal(false);
 
   voices = signal<ITtsVoice[]>([]);
+  chats = signal<TtsChat[]>([]);
+  history = signal<TtsHistoryRow[]>([]);
+  selectedChatId = signal<string | null>(null);
+  showHistoryDrawer = signal(false);
+  isLoadingHistory = signal(false);
 
+  // Computed signals
+  activeChat = computed(() =>
+    this.chats().find((c) => c.id === this.selectedChatId())
+  );
+
+  private audio: HTMLAudioElement | null = null;
+  private demoAudio: HTMLAudioElement | null = null;
+  playingDemo = signal<string | null>(null);
+
+  // --- Lifecycle ---
   ngOnInit() {
     this.loadVoices();
+    this.loadChats();
   }
 
+  ngOnDestroy() {
+    this.cleanupAudio();
+  }
+
+  // --- Session & Chat Management ---
+  loadChats() {
+    this.service.getChats().subscribe({
+      next: (res) => this.chats.set(res),
+      error: (err) => console.error('Failed to load chats', err),
+    });
+  }
+
+  selectChat(chatId: string) {
+    this.selectedChatId.set(chatId);
+    this.showHistoryDrawer.set(false);
+    this.loadHistory(chatId);
+  }
+
+  createNewSession() {
+    this.service.createSession().subscribe({
+      next: (chat) => {
+        const id = chat.id || chat.ChatId;
+        this.selectedChatId.set(id);
+        this.loadChats();
+        this.clear();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'New Session',
+          detail: 'New TTS session started.',
+        });
+      },
+      error: (err) =>
+        this.handleError('Server error, could not start session.'),
+    });
+  }
+
+  // --- History Management ---
+  loadHistory(chatId: string) {
+    this.isLoadingHistory.set(true);
+    this.service.getHistory(chatId).subscribe({
+      next: (res) => {
+        this.history.set(res);
+        this.isLoadingHistory.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load history', err);
+        this.isLoadingHistory.set(false);
+      },
+    });
+  }
+
+  viewHistoryRecord(record: TtsHistoryRow) {
+    this.cleanupAudio();
+    this.textToConvert.set(record.inputText);
+    this.selectedVoice.set(record.voiceName);
+
+    if (record.audioData) {
+      const url = this.base64ToBlobUrl(record.audioData);
+      this.audioUrl.set(url);
+      this.isAudioReady.set(true);
+    }
+  }
+
+  // --- Synthesis Logic ---
+  synthesize() {
+    const text = this.textToConvert().trim();
+    if (!text) return;
+
+    if (!this.selectedChatId()) {
+      // Auto-create session if none active
+      this.service.createSession().subscribe({
+        next: (chat) => {
+          const id = chat.id || chat.ChatId;
+          this.selectedChatId.set(id);
+          this.loadChats();
+          this.executeSynthesize(id, text);
+        },
+        error: (err) =>
+          this.handleError('Server error, could not start session.'),
+      });
+    } else {
+      this.executeSynthesize(this.selectedChatId()!, text);
+    }
+  }
+
+  private executeSynthesize(chatId: string, text: string) {
+    this.isLoading.set(true);
+    this.isAudioReady.set(false);
+
+    const payload = {
+      chatId: chatId,
+      text: text,
+      voice: this.selectedVoice(),
+    };
+
+    this.service.synthesizeSpeech(payload).subscribe({
+      next: (blob) => {
+        this.isLoading.set(false);
+        this.isAudioReady.set(true);
+        this.cleanupAudio();
+
+        const url = URL.createObjectURL(blob);
+        this.audioUrl.set(url);
+        this.playAudioFromUrl(url);
+
+        // Success message
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Generated',
+          detail: 'Audio is ready to play.',
+        });
+
+        // Refresh history
+        this.loadHistory(chatId);
+      },
+      error: (err) => {
+        console.error('TTS Synthesis Error:', err);
+        this.handleError(err?.error?.message || 'Failed to generate speech');
+      },
+    });
+  }
+
+  // --- Audio Utilities ---
+  private playAudioFromUrl(url: string) {
+    this.audio = new Audio(url);
+    this.audio.play().catch((err) => {
+      console.warn('Auto-play blocked by browser', err);
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Audio Ready',
+        detail: 'Click play to listen.',
+      });
+    });
+  }
+
+  playAudio() {
+    if (this.audio) {
+      this.audio.currentTime = 0;
+      this.audio.play();
+    } else if (this.audioUrl()) {
+      this.playAudioFromUrl(this.audioUrl()!);
+    }
+  }
+
+  private base64ToBlobUrl(base64: string, contentType: string = 'audio/mpeg') {
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: contentType });
+    return URL.createObjectURL(blob);
+  }
+
+  // --- Voice Handlers ---
   loadVoices() {
     this.service.getVoices().subscribe({
       next: (res) => {
         if (Array.isArray(res) && res.length > 0) {
-          // Map backend string names to full ITtsVoice data from TTS_VOICES
           const mappedVoices = res.map((v: any) => {
             const name =
               typeof v === 'string' ? v : v.name || v.displayName || v.code;
             const found = TTS_VOICES.find((voice) => voice.name === name);
-
-            if (found) return found;
-
-            // Fallback
-            return {
-              name,
-              gender: typeof v === 'object' && v.gender ? v.gender : 'Unknown',
-              previewUrl: typeof v === 'object' && v.url ? v.url : '',
-            };
+            return (
+              found || {
+                name,
+                gender:
+                  typeof v === 'object' && v.gender ? v.gender : 'Unknown',
+                previewUrl: typeof v === 'object' && v.url ? v.url : '',
+              }
+            );
           });
           this.voices.set(mappedVoices);
+        } else {
+          this.voices.set([...TTS_VOICES]);
         }
       },
       error: (err) => {
@@ -92,50 +262,19 @@ export class TtsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * for a more deatlaied dto response from the api
-   *
-   * loadVoicesWithFullDto() {
-   *   this.service.getVoices().subscribe({
-   *     next: (res: ITtsVoice[]) => {
-   *       if (Array.isArray(res) && res.length > 0) {
-   *         this.voices.set(res);
-   *       } else {
-   *         this.voices.set([...TTS_VOICES]);
-   *       }
-   *     },
-   *     error: (err) => {
-   *       console.warn('Could not load voices from API, using defaults.', err);
-   *       this.voices.set([...TTS_VOICES]);
-   *     }
-   *   });
-   * }
-   */
-
   playVoiceDemo(event: Event, voice: ITtsVoice) {
-    event.stopPropagation(); // Prevent selecting the voice when clicking play
-
+    event.stopPropagation();
     if (this.playingDemo() === voice.name) {
       this.stopDemo();
       return;
     }
-
     this.stopDemo();
-
     if (!voice.previewUrl) return;
 
     this.demoAudio = new Audio(voice.previewUrl);
-
     this.playingDemo.set(voice.name);
-
-    this.demoAudio.onended = () => {
-      this.playingDemo.set(null);
-    };
-
-    this.demoAudio.play().catch((err) => {
-      console.error('Demo playback failed:', err);
-      this.playingDemo.set(null);
-    });
+    this.demoAudio.onended = () => this.playingDemo.set(null);
+    this.demoAudio.play().catch(() => this.playingDemo.set(null));
   }
 
   private stopDemo() {
@@ -147,95 +286,11 @@ export class TtsComponent implements OnInit, OnDestroy {
     this.playingDemo.set(null);
   }
 
-  selectVoice(voiceName: string) {
-    this.selectedVoice.set(voiceName);
-  }
-
-  generateAudio() {
-    const text = this.textToConvert().trim();
-    if (!text) return;
-
-    this.isLoading.set(true);
-    this.isAudioReady.set(false);
-
-    this.service.createSession().subscribe({
-      next: (chat) => {
-        const chatId = chat?.id || chat?.ChatId;
-        if (!chatId) {
-          this.handleError('Could not create a valid session.');
-          return;
-        }
-
-        const payload = {
-          chatId: chatId,
-          text: text,
-          voice: this.selectedVoice(),
-        };
-
-        this.service.convertTextToSpeech(payload).subscribe({
-          next: (blob) => {
-            this.isLoading.set(false);
-            this.isAudioReady.set(true);
-
-            // Clean up previous resources
-            this.cleanupAudio();
-
-            // Create playable URL
-            const url = URL.createObjectURL(blob);
-            this.audioUrl.set(url);
-
-            // Play
-            this.audio = new Audio(url);
-            this.audio.play().catch((err) => {
-              console.error('Audio playback failed:', err);
-              this.messageService.add({
-                severity: 'warn',
-                summary: 'Playback Issue',
-                detail:
-                  'Audio generated, but auto-play was blocked by the browser.',
-              });
-            });
-
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Generated',
-              detail: 'Audio is ready to play.',
-            });
-          },
-          error: (err) => {
-            console.error('TTS Synthesis Error:', err);
-            this.handleError(
-              err?.error?.message || 'Failed to generate speech'
-            );
-          },
-        });
-      },
-      error: (err) => {
-        console.error('Session Error:', err);
-        this.handleError('Server error, could not start session.');
-      },
-    });
-  }
-
-  private handleError(detail: string) {
-    this.isLoading.set(false);
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: detail,
-    });
-  }
-
-  playAudio() {
-    if (this.audio) {
-      this.audio.currentTime = 0;
-      this.audio.play();
-    }
-  }
-
+  // --- General Utilities ---
   clear() {
     this.textToConvert.set('');
     this.isAudioReady.set(false);
+    this.history.set([]);
     this.cleanupAudio();
   }
 
@@ -253,7 +308,12 @@ export class TtsComponent implements OnInit, OnDestroy {
     this.stopDemo();
   }
 
-  ngOnDestroy() {
-    this.cleanupAudio();
+  private handleError(detail: string) {
+    this.isLoading.set(false);
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: detail,
+    });
   }
 }
