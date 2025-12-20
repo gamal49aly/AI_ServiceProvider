@@ -4,23 +4,64 @@
   class="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4 transition-colors duration-300"
 >
   <div class="container mx-auto max-w-5xl">
-    <div class="text-center mb-12 animate-fade-in-down">
-      <div
-        class="inline-flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-2xl mb-4"
-      >
-        <i
-          class="pi pi-microphone text-3xl text-purple-600 dark:text-purple-400"
-        ></i>
+    <div class="flex items-center justify-between mb-12 animate-fade-in-down">
+      <div class="flex items-center gap-4">
+        <div
+          class="inline-flex items-center justify-center w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl"
+        >
+          <i
+            class="pi pi-microphone text-2xl text-purple-600 dark:text-purple-400"
+          ></i>
+        </div>
+        <div>
+          <h1 class="text-3xl font-bold text-slate-900 dark:text-white">
+            Speech to Text
+          </h1>
+          <p class="text-sm text-slate-500 dark:text-slate-400">
+            Transcribe audio with AI precision
+          </p>
+        </div>
       </div>
-      <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">
-        Speech to Text
-      </h1>
-      <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-        Transcribe your audio recordings into accurate text.
-      </p>
+
+      <div class="flex items-center gap-3">
+        <button
+          pButton
+          label="View History"
+          icon="pi pi-history"
+          outlined
+          class=" p-button-secondary rounded-xl bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-purple-500 hover:text-purple-500 transition-all shadow-sm"
+          (click)="showHistoryDrawer.set(true)"
+        ></button>
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    @if (activeChat()) {
+    <div
+      class="mb-8 p-4 bg-purple-50/50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-900/30 rounded-2xl flex items-center justify-between animate-fade-in"
+    >
+      <div class="flex items-center gap-3">
+        <div
+          class="w-2 h-2 rounded-full bg-purple-500 animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]"
+        ></div>
+        <span class="text-sm font-medium text-purple-900 dark:text-purple-300">
+          Active Session:
+          <span class="font-bold opacity-100 ml-1">{{
+            activeChat()?.name
+          }}</span>
+        </span>
+      </div>
+      <button
+        pButton
+        icon="pi pi-plus"
+        label="New Session"
+        size="small"
+        class="p-button-text  text-purple-600 dark:text-purple-400 font-bold hover:bg-purple-100 dark:hover:bg-purple-900/30"
+        (click)="createNewSession()"
+      ></button>
+    </div>
+    }
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 min-w-[1200px] min-h-[600px]">
       <div class="space-y-6">
         <p-card
           styleClass="shadow-lg h-full border border-slate-100 dark:border-slate-800"
@@ -65,16 +106,12 @@
           <div
             class="mb-6 bg-purple-50 dark:bg-purple-900/20 p-4 rounded-xl flex items-center gap-4 animate-fade-in-down"
           >
-            <div
-              class="w-10 h-10 bg-purple-200 dark:bg-purple-800 rounded-full flex items-center justify-center text-purple-700 dark:text-purple-300"
-            >
-              <i class="pi pi-play"></i>
-            </div>
             <audio [src]="audioUrl()" controls class="w-full h-8"></audio>
             <button
               pButton
               icon="pi pi-times"
-              class="p-button-rounded p-button-text p-button-danger p-button-sm"
+              size="small"
+              class="p-button-rounded p-button-text p-button-danger"
               (click)="clear()"
             ></button>
           </div>
@@ -84,7 +121,8 @@
             pButton
             label="Convert to Text"
             icon="pi pi-bolt"
-            class="w-full p-button-lg bg-purple-600 border-purple-600 hover:bg-purple-700 text-white"
+            size="large"
+            class="w-full  bg-purple-600 border-purple-600 hover:bg-purple-700 text-white"
             [loading]="isLoading()"
             [disabled]="!uploadedFile()"
             (click)="processAudio()"
@@ -163,6 +201,149 @@
           }
         </p-card>
       </div>
+    <div class="mt-16 space-y-8">
+      <div class="flex items-center gap-3">
+        <div class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></div>
+        <h2 class="text-xl font-bold text-slate-400 dark:text-slate-600">
+          Transcription Feed
+        </h2>
+        <div class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6">
+        @for (record of history(); track record.inputId) {
+        <div
+          class="group bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md hover:border-purple-200 dark:hover:border-purple-900/50 transition-all duration-300 cursor-pointer animate-fade-in"
+          (click)="viewHistoryRecord(record)"
+        >
+          <div class="flex flex-col md:flex-row gap-6">
+            <div
+              class="w-full md:w-48 h-32 bg-slate-50 dark:bg-slate-950 rounded-xl flex items-center justify-center border border-slate-100 dark:border-slate-800 group-hover:bg-purple-50 dark:group-hover:bg-purple-950/30 transition-colors"
+            >
+              <i
+                class="pi pi-volume-up text-3xl text-slate-300 group-hover:text-purple-400"
+              ></i>
+            </div>
+            <div class="flex-1 space-y-3">
+              <div class="flex items-center justify-between">
+                <span
+                  class="text-[10px] font-mono tracking-wider text-slate-400 uppercase"
+                >
+                  Session: {{ activeChat()?.name || "Original" }}
+                </span>
+                <span class="text-xs text-slate-500">
+                  {{ record.uploadedAt | date : "medium" }}
+                </span>
+              </div>
+              <p
+                class="text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed"
+              >
+                {{ record.transcribedText }}
+              </p>
+              <div class="flex items-center gap-4 pt-2">
+                <button
+                  pButton
+                  label="View Details"
+                  icon="pi pi-external-link"
+                  size="small"
+                  class="p-button-text text-purple-600 dark:text-purple-400 p-0"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        } @empty {
+        <div
+          class="text-center py-20 bg-slate-50/50 dark:bg-slate-900/20 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800"
+        >
+          <i
+            class="pi pi-cloud-upload text-5xl text-slate-200 dark:text-slate-800 mb-4"
+          ></i>
+          <p class="text-slate-400 dark:text-slate-500">
+            No history yet for this session.
+          </p>
+        </div>
+        }
+      </div>
     </div>
   </div>
 </div>
+
+<!-- History Drawer -->
+<p-drawer
+  [(visible)]="showHistoryDrawer"
+  position="right"
+  styleClass="w-full md:w-[450px] border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center justify-between w-full pr-4">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center"
+        >
+          <i class="pi pi-history text-purple-600 dark:text-purple-400"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">
+          History
+        </h2>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="flex flex-col h-full">
+    <div class="p-6">
+      <button
+        pButton
+        label="Start New Session"
+        icon="pi pi-plus"
+        size="large"
+        class="w-full  bg-purple-600 border-purple-600 hover:bg-purple-700 text-white rounded-xl shadow-lg shadow-purple-200 dark:shadow-none transition-all hover:-translate-y-0.5"
+        (click)="createNewSession()"
+      ></button>
+    </div>
+
+    <p-divider styleClass="m-0"></p-divider>
+
+    <div class="flex-1 overflow-auto p-4 space-y-3">
+      @if (chats().length > 0) { @for (chat of chats(); track chat.id) {
+      <div
+        class="p-4 rounded-xl border transition-all cursor-pointer group relative"
+        [class.bg-purple-50]="selectedChatId() === chat.id"
+        [class.border-purple-200]="selectedChatId() === chat.id"
+        [class.dark:bg-purple-900/20]="selectedChatId() === chat.id"
+        [class.dark:border-purple-800]="selectedChatId() === chat.id"
+        [class.bg-white]="selectedChatId() !== chat.id"
+        [class.dark:bg-slate-900]="selectedChatId() !== chat.id"
+        [class.border-slate-100]="selectedChatId() !== chat.id"
+        [class.dark:border-slate-800]="selectedChatId() !== chat.id"
+        [class.hover:border-purple-300]="selectedChatId() !== chat.id"
+        (click)="selectChat(chat.id)"
+      >
+        <div class="flex items-center justify-between mb-2">
+          <span
+            class="text-sm font-bold truncate pr-8"
+            [class.text-purple-900]="selectedChatId() === chat.id"
+            [class.dark:text-purple-100]="selectedChatId() === chat.id"
+            [class.text-slate-700]="selectedChatId() !== chat.id"
+            [class.dark:text-slate-300]="selectedChatId() !== chat.id"
+          >
+            {{ chat.name }}
+          </span>
+          @if (selectedChatId() === chat.id) {
+          <p-badge severity="info" value="Active"></p-badge>
+          }
+        </div>
+        <div class="flex items-center text-[10px] text-slate-400 gap-2">
+          <i class="pi pi-calendar"></i>
+          {{ chat.createdAt | date : "medium" }}
+        </div>
+      </div>
+      } } @else {
+      <div class="text-center py-20 opacity-40">
+        <i class="pi pi-folder-open text-5xl mb-4"></i>
+        <p>No recent sessions</p>
+      </div>
+      }
+    </div>
+  </div>
+</p-drawer>
